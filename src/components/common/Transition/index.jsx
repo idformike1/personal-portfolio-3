@@ -24,7 +24,7 @@ export default function Transition({children}) {
     }, []);
 
     useLayoutEffect(() => {
-        if (!isMounted || !container.current || !path.current) return;
+        if (!isMounted || !container.current || !path.current || !labelRef.current) return;
 
         // Snellenberg Engine V3: 5-Point Node Dictionary (M, Q, L, L, Z)
         const pathA = `M0,100 Q50,-50 100,100 L100,100 L0,100 Z`; // Entry Dome
@@ -32,6 +32,9 @@ export default function Transition({children}) {
         const pathC = `M0,0 Q50,150 100,0 L100,0 L0,0 Z`;      // Exit Suction
 
         let ctx = gsap.context(() => {
+            // Ref safety check inside context
+            if (!container.current || !path.current || !labelRef.current) return;
+
             const tl = gsap.timeline({
                 onComplete: () => {
                     if (container.current) {
@@ -42,9 +45,9 @@ export default function Transition({children}) {
 
             // Phase 1: Entry Sweep (Bottom -> 0)
             tl.set(container.current, { top: "100vh", pointerEvents: "all" })
+              .call(() => setIsContentVisible(false)) // Correct state reset at start
               .set(path.current, { attr: { d: pathA } })
               .set(labelRef.current, { opacity: 0, y: 50 })
-              .set(setIsContentVisible, false) // Reset curtain
               
               .to(container.current, {
                   top: 0,
