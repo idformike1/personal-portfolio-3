@@ -12,13 +12,6 @@ export default function Hero() {
     const image = useRef(null);
     const marqueeRef = useRef(null);
 
-    // Link Lenis velocity to Marquee momentum
-    useLenis(({ velocity }) => {
-        if (marqueeRef.current) {
-            marqueeRef.current.updateVelocity(velocity);
-        }
-    });
-
     useEffect(() => {
         // Mobile Guard: Disable parallax on touch devices
         if (window.matchMedia("(pointer: coarse)").matches) return;

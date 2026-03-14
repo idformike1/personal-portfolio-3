@@ -1,7 +1,7 @@
-'use client';
-import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useRef, useEffect, forwardRef } from 'react';
 import gsap from 'gsap';
 import styles from './style.module.scss';
+import useVelocitySync from '@/hooks/useVelocitySync';
 
 const InfiniteMarquee = forwardRef(({ 
     text = "", 
@@ -13,23 +13,14 @@ const InfiniteMarquee = forwardRef(({
     const sliderWrapper = useRef(null);
     const timeline = useRef(null);
 
-    // Expose velocity control to parent
-    useImperativeHandle(ref, () => ({
-        updateVelocity: (velocity) => {
-            if (timeline.current) {
-                gsap.to(timeline.current, {
-                    timeScale: 1 + Math.abs(velocity * 0.1),
-                    duration: 0.5,
-                    ease: "power2.out"
-                });
-            }
-        }
-    }));
+    // Advanced Velocity Integration via Hook
+    useVelocitySync(timeline, 1, 10);
 
     useEffect(() => {
         let ctx = gsap.context(() => {
-            // Twin-track loop logic
-            // We use xPercent: -100 on the wrapper containing two identical tracks
+            // Twin-track loop architecture: 0% -> -100%
+            gsap.set(sliderWrapper.current, { xPercent: 0 });
+
             timeline.current = gsap.timeline({
                 repeat: -1,
                 defaults: { ease: "none" },
@@ -45,7 +36,7 @@ const InfiniteMarquee = forwardRef(({
         return () => ctx.revert();
     }, [speed, isTransitionComplete]);
 
-    // Handle "Blind Mount" - play only when transition is complete
+    // Stage 2 Blind Mount Protocol: Play only when transition is complete
     useEffect(() => {
         if (isTransitionComplete && timeline.current) {
             timeline.current.play();
@@ -61,7 +52,7 @@ const InfiniteMarquee = forwardRef(({
                     <p>{text}</p>
                     <p>{text}</p>
                 </div>
-                {/* Duplicate track for seamless looping */}
+                {/* Duplicate track for seamless 0 to -100% loop */}
                 <div className={styles.slider}>
                     <p>{text}</p>
                     <p>{text}</p>
