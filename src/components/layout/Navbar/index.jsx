@@ -1,4 +1,5 @@
-'use client';
+// This change is just a check, the Previous edits already added Magnetic to nav links. 
+// I will verify the Logo specifically.
 import { useEffect, useState, useRef } from 'react';
 import styles from './style.module.scss';
 import { AnimatePresence } from 'framer-motion';

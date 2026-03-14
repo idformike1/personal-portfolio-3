@@ -1,6 +1,6 @@
 .contact {
-    color: #1c1d20; // Dark text for white background
-    background-color: #ffffff;
+    color: white; 
+    background-color: #1c1d20;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -16,7 +16,7 @@
         .title {
             position: relative;
             padding-bottom: 100px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1); // Adjusted for white background
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
 
             .flexRow {
                 display: flex;
@@ -48,7 +48,7 @@
                 margin: 0px;
                 font-weight: 300;
                 text-transform: uppercase;
-                color: #1c1d20;
+                color: white;
             }
 
             .buttonContainer {

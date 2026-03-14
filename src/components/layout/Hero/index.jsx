@@ -61,9 +61,9 @@ export default function Hero() {
             </div>
             <InfiniteMarquee 
                 ref={marqueeRef}
-                text="Freelance Designer - Independent Designer & Developer -" 
+                text="Dennis Snellenberg —" 
                 speed={20}
-                isTransitionComplete={true} // In this context, we can set to true or link to page mount state
+                isTransitionComplete={true} 
                 className={styles.marqueePosition}
             />
         </section>
