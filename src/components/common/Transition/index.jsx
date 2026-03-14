@@ -26,6 +26,15 @@ export default function Transition({children}) {
     useLayoutEffect(() => {
         if (!isMounted || !container.current || !path.current || !labelRef.current) return;
 
+        // Session Gating: Skip animation on initial website load
+        const isInitialLoad = typeof window !== "undefined" && !sessionStorage.getItem("visited");
+        if (isInitialLoad) {
+            setIsContentVisible(true);
+            sessionStorage.setItem("visited", "true");
+            gsap.set(container.current, { top: "-100vh", pointerEvents: "none" });
+            return;
+        }
+
         // Snellenberg Engine V3: 5-Point Node Dictionary (M, Q, L, L, Z)
         const pathA = `M0,100 Q50,-50 100,100 L100,100 L0,100 Z`; // Entry Dome
         const pathB = `M0,100 Q50,100 100,100 L100,0 L0,0 Z`;    // Flat / Hold
