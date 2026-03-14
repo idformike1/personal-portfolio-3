@@ -75,7 +75,7 @@ export default function Transition({children}) {
                   opacity: 1,
                   y: 0,
                   duration: 0.3,
-                  ease: "power4.out"
+                  ease: "back.out(1.7)"
               }, "-=0.1")
               
               // Phase 3: Exit Sweep & Parallax Sync
@@ -84,7 +84,7 @@ export default function Transition({children}) {
                   y: -50,
                   duration: 0.4,
                   ease: "power4.in",
-                  delay: 0.5
+                  delay: 0.3 // Compressed from 0.5s (40% reduction)
               })
               .to(container.current, {
                   top: "-100vh",
