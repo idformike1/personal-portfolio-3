@@ -26,15 +26,13 @@ export default function Transition({children}) {
     useLayoutEffect(() => {
         if (!isMounted || !container.current || !path.current) return;
 
-        // Node-Matched Paths (Anti-Twist Structure)
-        // Format: M (Top-Left) Q (Top-Middle) (Top-Right) L (Bottom-Right) Q (Bottom-Middle) (Bottom-Left) Z
-        
-        // Hard-Reset Entry (Approved Task 7 Math)
+        // LOOCKED Entry Math (Approved)
         const initialPath = `M0 100 Q50 -50 100 100 L100 200 Q50 200 0 200 Z`;
         const targetPath = `M0 0 Q50 0 100 0 L100 200 Q50 200 0 200 Z`;
         
-        // Anti-Twist Exit (Synced to Flat Node structure)
-        const exitPath = `M0 0 Q50 0 100 0 L100 100 Q50 0 0 100 Z`;
+        // RESTORED Sprint 1 Exit Math (Deep Suction)
+        // Adjusting Q y to 150 for deeper drag during the -100vh lift
+        const exitPath = `M0 0 Q50 150 100 0 L100 150 L0 150 Z`;
 
         let ctx = gsap.context(() => {
             const tl = gsap.timeline({
@@ -45,7 +43,7 @@ export default function Transition({children}) {
                 }
             });
 
-            // Phase 1: Entry (Bottom -> 0) - RESTORED & LOCKED
+            // Phase 1: Entry (Bottom -> 0) - LOCKED
             tl.set(container.current, { top: "100vh", pointerEvents: "all" })
               .set(path.current, { attr: { d: initialPath } })
               .set(labelRef.current, { opacity: 0, y: 50 })
@@ -70,7 +68,7 @@ export default function Transition({children}) {
                   ease: "power4.out"
               }, "-=0.2")
               
-              // Phase 3: Exit (0 -> Top) + Symmetrical Parallax Sync
+              // Phase 3: Exit (0 -> Top) + Parallax Sync
               .to(labelRef.current, {
                   opacity: 0,
                   y: -50,
@@ -89,13 +87,13 @@ export default function Transition({children}) {
                   ease: "power4.inOut"
               }, "<")
               .fromTo(pageContentRef.current, 
-                { y: "15vh" },
+                { y: "10vh" },
                 {
                     y: 0,
                     duration: 0.8,
                     ease: "power4.inOut"
-                }, "<"); // Parallax Lock firing with 0 -> -100vh travel
-        }); // Removed 'container' scope to allow targeting pageContentRef
+                }, "<"); 
+        });
 
         return () => ctx.revert();
     }, [isMounted, pathname]);
