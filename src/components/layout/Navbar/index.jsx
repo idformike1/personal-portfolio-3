@@ -22,7 +22,7 @@ export default function Navbar() {
     gsap.set(button.current, { scale: 0, autoAlpha: 0 });
     gsap.set(nav.current, { opacity: 1, pointerEvents: 'auto' });
 
-    ScrollTrigger.create({
+    const trigger = ScrollTrigger.create({
       trigger: document.documentElement,
       start: 'top top',
       end: '+=150',
@@ -31,16 +31,18 @@ export default function Navbar() {
         gsap.to(nav.current, { opacity: 0, pointerEvents: 'none', duration: 0.2 });
       },
       onEnterBack: () => {
-        gsap.to(button.current, { scale: 0, autoAlpha: 0, duration: 0.25, ease: 'power2.in' });
-        gsap.to(nav.current, { opacity: 1, pointerEvents: 'auto', duration: 0.2 });
-        setIsActive(false);
+        // Only hide hamburger if menu is NOT active
+        if (!isActive) {
+          gsap.to(button.current, { scale: 0, autoAlpha: 0, duration: 0.25, ease: 'power2.in' });
+          gsap.to(nav.current, { opacity: 1, pointerEvents: 'auto', duration: 0.2 });
+        }
       }
     });
 
     return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
+      trigger.kill();
     };
-  }, []);
+  }, [isActive]); // Re-run when isActive changes to ensure ScrollTrigger knows state
 
   useEffect(() => {
     if (isActive) setIsActive(false);
@@ -60,7 +62,6 @@ export default function Navbar() {
             </Link>
           </Magnetic>
 
-          {/* Desktop nav links — hidden after 150px scroll */}
           <div ref={nav} className={styles.nav}>
             <Magnetic>
               <div className={styles.el}>
@@ -84,7 +85,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Hamburger — appears after 150px scroll */}
       <div
         ref={button}
         onClick={() => setIsActive(!isActive)}

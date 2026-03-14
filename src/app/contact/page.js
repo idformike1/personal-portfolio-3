@@ -1,5 +1,4 @@
 'use client';
-import InfiniteMarquee from '@/components/common/InfiniteMarquee';
 
 export default function ContactPage() {
     return (
@@ -34,15 +33,6 @@ export default function ContactPage() {
             }}>
                 info@dennissnellenberg.com · +31 6 27 84 74 30
             </p>
-
-            {/* Marquee anchored to bottom */}
-            <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', zIndex: 1 }}>
-                <InfiniteMarquee
-                    text="Contact — "
-                    speed={15}
-                    isTransitionComplete={true}
-                />
-            </div>
         </main>
     );
 }

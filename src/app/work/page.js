@@ -1,5 +1,4 @@
 'use client';
-import InfiniteMarquee from '@/components/common/InfiniteMarquee';
 import Work from '@/components/layout/Work';
 
 export default function WorkPage() {

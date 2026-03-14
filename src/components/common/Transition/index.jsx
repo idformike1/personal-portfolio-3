@@ -41,20 +41,21 @@ export default function Transition({children}) {
         const pathC = `M0,0 Q50,150 100,0 L100,0 L0,0 Z`;      // Exit Suction
 
         let ctx = gsap.context(() => {
-            // Ref safety check inside context
             if (!container.current || !path.current || !labelRef.current) return;
 
             const tl = gsap.timeline({
                 onComplete: () => {
-                    if (container.current) {
-                        gsap.set(container.current, { pointerEvents: "none" });
+                    if (container.current && path.current) {
+                        // FIX: Explicitly clear the path and hide to prevent crescent glitch
+                        gsap.set(path.current, { attr: { d: "" } });
+                        gsap.set(container.current, { pointerEvents: "none", visibility: "hidden" });
                     }
                 }
             });
 
             // Phase 1: Entry Sweep (Bottom -> 0)
-            tl.set(container.current, { top: "100vh", pointerEvents: "auto" })
-              .call(() => setIsContentVisible(false)) // Correct state reset at start
+            tl.set(container.current, { top: "100vh", pointerEvents: "auto", visibility: "visible" })
+              .call(() => setIsContentVisible(false))
               .set(path.current, { attr: { d: pathA } })
               .set(labelRef.current, { opacity: 0, y: 50 })
               
@@ -70,7 +71,7 @@ export default function Transition({children}) {
                   duration: 0.4,
                   ease: "power4.inOut"
               })
-              .call(() => setIsContentVisible(true), null, "+=0.1") // The Pivot with 0.1s safety buffer
+              .call(() => setIsContentVisible(true), null, "+=0.1") 
               .to(labelRef.current, {
                   opacity: 1,
                   y: 0,
@@ -84,7 +85,7 @@ export default function Transition({children}) {
                   y: -50,
                   duration: 0.4,
                   ease: "power4.in",
-                  delay: 0.3 // Compressed from 0.5s (40% reduction)
+                  delay: 0.3 
               })
               .to(container.current, {
                   top: "-100vh",
@@ -105,7 +106,6 @@ export default function Transition({children}) {
                 }, "<"); 
         });
 
-            // Safety Guard: Force 'Black Curtain' to drop if site hangs (e.g., 404)
             const safetyTimeout = setTimeout(() => {
                 if (!isContentVisible) {
                     setIsContentVisible(true);

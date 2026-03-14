@@ -1,5 +1,4 @@
 'use client';
-import InfiniteMarquee from '@/components/common/InfiniteMarquee';
 
 export default function AboutPage() {
     return (
@@ -34,15 +33,6 @@ export default function AboutPage() {
             }}>
                 Freelance Designer &amp; Developer · Based in the Netherlands
             </p>
-
-            {/* Marquee anchored to bottom */}
-            <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', zIndex: 1 }}>
-                <InfiniteMarquee
-                    text="About — "
-                    speed={15}
-                    isTransitionComplete={true}
-                />
-            </div>
         </main>
     );
 }
