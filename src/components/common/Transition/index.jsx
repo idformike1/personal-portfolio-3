@@ -26,9 +26,9 @@ export default function Transition({children}) {
         if (!isMounted || !container.current || !path.current) return;
 
         // Path definitions for a 100x100 viewBox
-        // Entry: Curved Up (initial) -> Flat (target)
-        // Exit: Flat -> Curved Down (suction)
-        const initialCurve = `M0 100 Q50 0 100 100 L100 100 L0 100`;
+        // Entry: Dome Curve (Curved Up) -> Flat
+        // Exit: Flat -> Suction Curve (Curved Down)
+        const initialCurve = `M0 100 Q50 -100 100 100 L100 100 L0 100`; // Upward convex dome
         const flatPath = `M0 100 Q50 100 100 100 L100 0 L0 0`;
         const suctionCurve = `M0 0 Q50 100 100 0 L100 0 L0 0`;
 
@@ -41,10 +41,10 @@ export default function Transition({children}) {
                 }
             });
 
-            // Reset and Entry
+            // Entry Sweep
             tl.set(container.current, { yPercent: 100, pointerEvents: "all" })
               .set(path.current, { attr: { d: initialCurve } })
-              .set(labelRef.current, { opacity: 0 })
+              .set(labelRef.current, { opacity: 0, y: 50 })
               
               .to(container.current, {
                   yPercent: 0,
@@ -56,15 +56,21 @@ export default function Transition({children}) {
                   duration: 0.8,
                   ease: "power4.inOut"
               }, "<")
+              
+              // Label Reveal (During Hold)
               .to(labelRef.current, {
                   opacity: 1,
-                  duration: 0.3
+                  y: 0,
+                  duration: 0.4,
+                  ease: "power4.out"
               }, "-=0.2")
               
-              // Hold & Exit (Curtain Continued Up)
+              // Exit Sweep
               .to(labelRef.current, {
                   opacity: 0,
-                  duration: 0.3,
+                  y: -50,
+                  duration: 0.4,
+                  ease: "power4.in",
                   delay: 0.5
               })
               .to(container.current, {
