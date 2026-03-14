@@ -1,11 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import styles from './style.module.scss';
 
 const words = ["Hello", "Bonjour", "Ciao", "Olà", "Schalom", "Hallo", "नमस्ते", "Hello"];
 
-export default function Preloader() {
+export default function Preloader({ finishLoading }) {
     const [index, setIndex] = useState(0);
     const [dimension, setDimension] = useState({ width: 0, height: 0 });
     const [isMounted, setIsMounted] = useState(false);
@@ -16,11 +16,12 @@ export default function Preloader() {
         const seen = sessionStorage.getItem('seenIntro');
         if (seen) {
             setHasSeenIntro(true);
+            if (finishLoading) finishLoading();
         } else {
             setHasSeenIntro(false);
             document.body.style.overflow = 'hidden';
+            setDimension({ width: window.innerWidth, height: window.innerHeight });
         }
-        setDimension({ width: window.innerWidth, height: window.innerHeight });
     }, []);
 
     useEffect(() => {
@@ -59,11 +60,13 @@ export default function Preloader() {
             }}
             initial="initial"
             exit="exit"
-            onExitComplete={() => {
+            onAnimationComplete={() => {
                 sessionStorage.setItem('seenIntro', 'true');
                 document.body.style.overflow = 'auto';
+                if (finishLoading) finishLoading();
             }}
             className={styles.introduction}
+            style={{ zIndex: 999 }}
         >
             {dimension.width > 0 && (
                 <>

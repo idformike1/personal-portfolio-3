@@ -26,11 +26,11 @@ export default function Transition({children}) {
         if (!isMounted || !container.current || !path.current) return;
 
         // Path definitions for a 100x100 viewBox
-        // Morphing from bottom to top
-        const initialPath = `M0 100 Q50 100 100 100 L100 100 L0 100`;
-        const curvePath = `M0 100 Q50 0 100 100 L100 100 L0 100`;
+        // Entry: Curved Up (initial) -> Flat (target)
+        // Exit: Flat -> Curved Down (suction)
+        const initialCurve = `M0 100 Q50 0 100 100 L100 100 L0 100`;
         const flatPath = `M0 100 Q50 100 100 100 L100 0 L0 0`;
-        const exitCurvePath = `M0 0 Q50 100 100 0 L100 0 L0 0`; // Suction curve (bottom edge pulling up)
+        const suctionCurve = `M0 0 Q50 100 100 0 L100 0 L0 0`;
 
         let ctx = gsap.context(() => {
             const tl = gsap.timeline({
@@ -41,25 +41,21 @@ export default function Transition({children}) {
                 }
             });
 
-            // Entry Animation (Curtain Up)
+            // Reset and Entry
             tl.set(container.current, { yPercent: 100, pointerEvents: "all" })
-              .set(path.current, { attr: { d: initialPath } })
+              .set(path.current, { attr: { d: initialCurve } })
               .set(labelRef.current, { opacity: 0 })
+              
               .to(container.current, {
                   yPercent: 0,
                   duration: 0.8,
                   ease: "power4.inOut"
               })
               .to(path.current, {
-                  attr: { d: curvePath },
-                  duration: 0.4,
-                  ease: "power4.in"
-              }, "<")
-              .to(path.current, {
                   attr: { d: flatPath },
-                  duration: 0.4,
-                  ease: "power4.out"
-              })
+                  duration: 0.8,
+                  ease: "power4.inOut"
+              }, "<")
               .to(labelRef.current, {
                   opacity: 1,
                   duration: 0.3
@@ -77,7 +73,7 @@ export default function Transition({children}) {
                   ease: "power4.inOut"
               })
               .to(path.current, {
-                  attr: { d: exitCurvePath },
+                  attr: { d: suctionCurve },
                   duration: 0.8,
                   ease: "power4.inOut"
               }, "<");
@@ -92,7 +88,7 @@ export default function Transition({children}) {
 
     return (
         <>
-            <div ref={container} className={styles.transitionContainer}>
+            <div ref={container} className={styles.transitionContainer} style={{ zIndex: 99 }}>
                 <div ref={labelRef} className={styles.label}>
                     • {label}
                 </div>
