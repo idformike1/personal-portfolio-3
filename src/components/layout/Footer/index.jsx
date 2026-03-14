@@ -1,7 +1,6 @@
 'use client';
 import styles from './style.module.scss';
 import Image from 'next/image';
-import Link from 'next/link';
 import Rounded from '../../common/RoundedButton';
 import { useRef } from 'react';
 import { useScroll, motion, useTransform } from 'framer-motion';
@@ -22,7 +21,7 @@ export default function Footer() {
             <div className={styles.body}>
                 <div className={styles.title}>
                     <div className={styles.flexRow}>
-                        <Link href="/">
+                        <span>
                             <div className={styles.imageContainer}>
                                 <Image
                                     fill={true}
@@ -30,12 +29,13 @@ export default function Footer() {
                                     src={`/images/hero_portrait.png`}
                                 />
                             </div>
-                        </Link>
-                        {/* Sentence case — matches original */}
-                        <h2>Let's work</h2>
+                            {/* Sentence case — matches original */}
+                            <h2>Let's work</h2>
+                        </span>
                         <motion.div style={{ x }} className={styles.buttonContainer}>
-                            <Rounded backgroundColor={'#ffffff'} className={styles.button}>
-                                <p style={{ color: '#1c1d20' }}>Get in touch</p>
+                            {/* Vibrant blue — as per original */}
+                            <Rounded backgroundColor={'#455ce9'} className={styles.button}>
+                                <p>Get in touch</p>
                             </Rounded>
                         </motion.div>
                     </div>
