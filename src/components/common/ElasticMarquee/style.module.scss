@@ -1,0 +1,43 @@
+.marqueeContainer {
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+    
+    .sliderWrapper {
+        position: relative;
+        white-space: nowrap;
+        display: flex;
+        will-change: transform;
+        
+        .slider {
+            display: flex;
+            align-items: center;
+            
+            p {
+                margin: 0px;
+                color: white;
+                font-size: 230px;
+                font-weight: 500;
+                padding-right: 50px;
+                text-transform: uppercase;
+                line-height: 1;
+            }
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .marqueeContainer {
+        .sliderWrapper .slider p {
+            font-size: 150px;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .marqueeContainer {
+        .sliderWrapper .slider p {
+            font-size: 100px;
+        }
+    }
+}
