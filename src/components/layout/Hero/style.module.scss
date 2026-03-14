@@ -8,6 +8,20 @@
     justify-content: center;
     background-color: #000;
 
+    .marqueePosition {
+        position: absolute;
+        top: calc(100vh - 350px);
+        z-index: 2;
+
+        @media (max-width: 1024px) {
+            top: calc(100vh - 250px);
+        }
+
+        @media (max-width: 768px) {
+            top: calc(100vh - 200px);
+        }
+    }
+
     .background {
         position: absolute;
         top: 0;

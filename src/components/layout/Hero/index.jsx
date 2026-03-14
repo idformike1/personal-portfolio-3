@@ -4,11 +4,20 @@ import { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import styles from './style.module.scss';
-import Marquee from './Marquee';
+import InfiniteMarquee from '@/components/common/InfiniteMarquee';
+import { useLenis } from '@studio-freight/react-lenis';
 
 export default function Hero() {
     const background = useRef(null);
     const image = useRef(null);
+    const marqueeRef = useRef(null);
+
+    // Link Lenis velocity to Marquee momentum
+    useLenis(({ velocity }) => {
+        if (marqueeRef.current) {
+            marqueeRef.current.updateVelocity(velocity);
+        }
+    });
 
     useEffect(() => {
         // Mobile Guard: Disable parallax on touch devices
@@ -57,7 +66,13 @@ export default function Hero() {
                     <p>Designer & Developer</p>
                 </div>
             </div>
-            <Marquee />
+            <InfiniteMarquee 
+                ref={marqueeRef}
+                text="Freelance Designer - Independent Designer & Developer -" 
+                speed={20}
+                isTransitionComplete={true} // In this context, we can set to true or link to page mount state
+                className={styles.marqueePosition}
+            />
         </section>
     );
 }
