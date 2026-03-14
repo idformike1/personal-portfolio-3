@@ -26,20 +26,20 @@ export default function Transition({children}) {
     useLayoutEffect(() => {
         if (!isMounted || !container.current || !path.current) return;
 
-        // Transition Logic Reset: Vertical Sweep Math (0-100 ViewBox)
+        // Master Node Symmetry: Strict M-L-L-Q-Z Blueprint (viewBox 0 0 100 100)
         // Format: M (bottom-left) L (bottom-right) L (top-right) Q (top-mid) (top-left) Z
         
         // Start: Flat line at the very bottom
         const initialPath = `M0,100 L100,100 L100,100 Q50,100 0,100 Z`;
         
-        // Sweep: Side lines L extend to top, Q creates upward convex dome
+        // Transition 1 -> 2: Entry Dome
         const domePath = `M0,100 L100,100 L100,0 Q50,-50 0,0 Z`;
         
-        // Final: Flat rectangle covering screen
+        // State 2: Hold (Zeroed Flat curve) - Essential for non-snapping morphs
         const targetPath = `M0,100 L100,100 L100,0 Q50,0 0,0 Z`;
         
-        // Suction (Exit): Mirrored nodes for smooth morph
-        const exitPath = `M0,0 L100,0 L100,0 Q50,150 0,0 Z`;
+        // Transition 2 -> 3: Exit Suction
+        const exitPath = `M0,100 L100,100 L100,100 Q50,150 0,100 Z`;
 
         let ctx = gsap.context(() => {
             const tl = gsap.timeline({
@@ -50,7 +50,7 @@ export default function Transition({children}) {
                 }
             });
 
-            // Phase 0: Reset pinning to kill "wedge" diagonal glitch
+            // master set: pin container to left:0, width:100vw to kill diagonal wedge
             gsap.set(container.current, { 
                 left: 0, 
                 width: "100vw", 
@@ -58,7 +58,7 @@ export default function Transition({children}) {
                 pointerEvents: "all" 
             });
 
-            // Phase 1: Entry (Vertical Sweep: Bottom -> 0)
+            // Phase 1: Entry (Vertical Sweep + Dome)
             tl.set(path.current, { attr: { d: initialPath } })
               .set(labelRef.current, { opacity: 0, y: 50 })
               .set(".motion-wrapper", { y: 0 })
@@ -87,7 +87,7 @@ export default function Transition({children}) {
                   ease: "power4.out"
               }, "-=0.2")
               
-              // Phase 3: Exit (0 -> Top)
+              // Phase 3: Exit Suction + Parallax Sync
               .to(labelRef.current, {
                   opacity: 0,
                   y: -50,
