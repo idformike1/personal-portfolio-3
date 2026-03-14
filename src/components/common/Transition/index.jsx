@@ -14,10 +14,10 @@ const routes = {
 export default function Transition({children}) {
     const pathname = usePathname();
     const [isMounted, setIsMounted] = useState(false);
+    const [isContentVisible, setIsContentVisible] = useState(false);
     const path = useRef(null);
     const container = useRef(null);
     const labelRef = useRef(null);
-    const pageContentRef = useRef(null);
 
     useEffect(() => {
         setIsMounted(true);
@@ -26,9 +26,10 @@ export default function Transition({children}) {
     useLayoutEffect(() => {
         if (!isMounted || !container.current || !path.current) return;
 
-        // Transition Reset: Geometric Stability Blueprint
-        // Using a solid rectangle for 100% stable movement (No Bezier Morphing)
-        const rectanglePath = `M0,0 L100,0 L100,100 L0,100 Z`;
+        // Snellenberg Engine V3: 5-Point Node Dictionary (M, Q, L, L, Z)
+        const pathA = `M0,100 Q50,-50 100,100 L100,100 L0,100 Z`; // Entry Dome
+        const pathB = `M0,100 Q50,100 100,100 L100,0 L0,0 Z`;    // Flat / Hold
+        const pathC = `M0,0 Q50,150 100,0 L100,0 L0,0 Z`;      // Exit Suction
 
         let ctx = gsap.context(() => {
             const tl = gsap.timeline({
@@ -39,48 +40,52 @@ export default function Transition({children}) {
                 }
             });
 
-            // Master Set: Pin stability
-            gsap.set(container.current, { 
-                left: 0, 
-                width: "100vw", 
-                top: "100vh", 
-                pointerEvents: "all" 
-            });
-
             // Phase 1: Entry Sweep (Bottom -> 0)
-            tl.set(path.current, { attr: { d: rectanglePath } })
+            tl.set(container.current, { top: "100vh", pointerEvents: "all" })
+              .set(path.current, { attr: { d: pathA } })
               .set(labelRef.current, { opacity: 0, y: 50 })
-              .set(".motion-wrapper", { y: 0 })
+              .set(setIsContentVisible, false) // Reset curtain
               
               .to(container.current, {
-                  top: "0vh",
+                  top: 0,
                   duration: 0.8,
                   ease: "power4.inOut"
               })
-              
-              // Phase 2: Label Reveal (Hold)
+
+              // Phase 2: Hold & Content Swap
+              .to(path.current, {
+                  attr: { d: pathB },
+                  duration: 0.4,
+                  ease: "power4.inOut"
+              })
+              .call(() => setIsContentVisible(true)) // The Pivot
               .to(labelRef.current, {
                   opacity: 1,
                   y: 0,
-                  duration: 0.4,
+                  duration: 0.3,
                   ease: "power4.out"
-              }, "-=0.2")
+              }, "-=0.1")
               
-              // Phase 3: Exit Sweep + Parallax Sync
+              // Phase 3: Exit Sweep & Parallax Sync
               .to(labelRef.current, {
                   opacity: 0,
                   y: -50,
                   duration: 0.4,
                   ease: "power4.in",
-                  delay: 0.2
+                  delay: 0.5
               })
               .to(container.current, {
                   top: "-100vh",
                   duration: 0.8,
                   ease: "power4.inOut"
               })
-              .fromTo(".motion-wrapper", 
-                { y: "10vh" }, // Adjusted to user Blueprint
+              .to(path.current, {
+                  attr: { d: pathC },
+                  duration: 0.8,
+                  ease: "power4.inOut"
+              }, "<")
+              .fromTo(".page-wrapper", 
+                { y: "20vh" },
                 {
                     y: 0,
                     duration: 0.8,
@@ -97,15 +102,18 @@ export default function Transition({children}) {
 
     return (
         <>
-            <div ref={container} className={styles.transitionContainer} style={{ zIndex: 99 }}>
+            <div ref={container} className={styles.transitionContainer}>
                 <div ref={labelRef} className={styles.label}>
                     • {label}
                 </div>
-                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none">
                     <path ref={path}></path>
                 </svg>
             </div>
-            <div ref={pageContentRef}>
+            
+            {!isContentVisible && <div className={styles.blackFiller} />}
+            
+            <div className={`page-wrapper ${!isContentVisible ? 'hidden' : ''}`}>
                 {children}
             </div>
         </>
