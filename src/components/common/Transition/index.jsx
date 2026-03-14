@@ -26,13 +26,14 @@ export default function Transition({children}) {
     useLayoutEffect(() => {
         if (!isMounted || !container.current || !path.current) return;
 
-        // High-Fidelity Path Morphs (Snellenberg Spec)
-        // Entry Dome: M0 100 Q50 -50 100 100 L100 200 L0 200 Z -> flat
+        // Approved Entry Logic (LOCK)
         const initialPath = `M0 100 Q50 -50 100 100 L100 200 L0 200 Z`;
-        const targetPath = `M0 0 Q50 0 100 0 L100 200 L0 200 Z`;
         
-        // Exit Suction: Bottom edge pulls up
-        const exitPath = `M0 0 Q50 0 100 0 L100 100 Q50 -50 0 100 Z`;
+        // Symmetrical Exit Refinement
+        // targetPath (Flat holding with bottom curve nodes for morph parity)
+        const targetPath = `M0 0 L100 0 L100 100 Q50 100 0 100 Z`;
+        // exitPath (U-Shape Suction: bottom corners pull up to top)
+        const exitPath = `M0 0 L100 0 L100 0 Q50 100 0 0 Z`;
 
         let ctx = gsap.context(() => {
             const tl = gsap.timeline({
@@ -43,7 +44,7 @@ export default function Transition({children}) {
                 }
             });
 
-            // Phase 1: Entry (Bottom -> 0)
+            // Phase 1: Entry (Bottom -> 0) - LOCK
             tl.set(container.current, { top: "100vh", pointerEvents: "all" })
               .set(path.current, { attr: { d: initialPath } })
               .set(labelRef.current, { opacity: 0, y: 50 })
@@ -68,7 +69,7 @@ export default function Transition({children}) {
                   ease: "power4.out"
               }, "-=0.2")
               
-              // Phase 3: Exit (0 -> Top)
+              // Phase 3: Exit (0 -> Top) + Symmetrical Parallax Sync
               .to(labelRef.current, {
                   opacity: 0,
                   y: -50,
@@ -86,13 +87,13 @@ export default function Transition({children}) {
                   duration: 0.8,
                   ease: "power4.inOut"
               }, "<")
-              .fromTo(pageContentRef.current, 
-                { y: "20vh" },
+              .fromTo(".incoming-page", 
+                { y: "15vh" },
                 {
                     y: 0,
                     duration: 0.8,
                     ease: "power4.inOut"
-                }, "<"); 
+                }, "<"); // Global Parallax Lock
         }, container);
 
         return () => ctx.revert();
