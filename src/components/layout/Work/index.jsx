@@ -36,7 +36,7 @@ export default function Work() {
     <div className={styles.body}>
       {
         projects.map( (project, index) => {
-          return <Project index={index} title={project.title} manageModal={setModal} key={index}/>
+          return <Project index={index} title={project.title} manageModal={(active, index) => {setModal({active, index})}} key={index}/>
         })
       }
     </div>

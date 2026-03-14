@@ -4,6 +4,7 @@ import { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import styles from './style.module.scss';
+import Marquee from './Marquee';
 
 export default function Hero() {
     return (
@@ -23,6 +24,7 @@ export default function Hero() {
                     <p>Designer & Developer</p>
                 </div>
             </div>
+            <Marquee />
         </section>
     );
 }

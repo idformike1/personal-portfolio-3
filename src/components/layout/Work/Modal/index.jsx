@@ -18,35 +18,53 @@ export default function Modal({modal, projects}) {
   const cursorLabel = useRef(null);
 
   useEffect( () => {
-    //Move Container
-    let xMoveContainer = gsap.quickTo(modalContainer.current, "left", {duration: 0.8, ease: "power3"});
-    let yMoveContainer = gsap.quickTo(modalContainer.current, "top", {duration: 0.8, ease: "power3"});
-    //Move cursor
-    let xMoveCursor = gsap.quickTo(cursor.current, "left", {duration: 0.5, ease: "power3"});
-    let yMoveCursor = gsap.quickTo(cursor.current, "top", {duration: 0.5, ease: "power3"});
-    //Move cursor label
-    let xMoveCursorLabel = gsap.quickTo(cursorLabel.current, "left", {duration: 0.45, ease: "power3"});
-    let yMoveCursorLabel = gsap.quickTo(cursorLabel.current, "top", {duration: 0.45, ease: "power3"});
+    let ctx = gsap.context(() => {
+      //Move Container
+      let xMoveContainer = gsap.quickTo(modalContainer.current, "left", {duration: 0.8, ease: "power3"});
+      let yMoveContainer = gsap.quickTo(modalContainer.current, "top", {duration: 0.8, ease: "power3"});
+      //Move cursor
+      let xMoveCursor = gsap.quickTo(cursor.current, "left", {duration: 0.5, ease: "power3"});
+      let yMoveCursor = gsap.quickTo(cursor.current, "top", {duration: 0.5, ease: "power3"});
+      //Move cursor label
+      let xMoveCursorLabel = gsap.quickTo(cursorLabel.current, "left", {duration: 0.45, ease: "power3"});
+      let yMoveCursorLabel = gsap.quickTo(cursorLabel.current, "top", {duration: 0.45, ease: "power3"});
 
-    const moveItems = (x, y) => {
-      xMoveContainer(x)
-      yMoveContainer(y)
-      xMoveCursor(x)
-      yMoveCursor(y)
-      xMoveCursorLabel(x)
-      yMoveCursorLabel(y)
-    }
+      const moveItems = (x, y) => {
+        xMoveContainer(x)
+        yMoveContainer(y)
+        xMoveCursor(x)
+        yMoveCursor(y)
+        xMoveCursorLabel(x)
+        yMoveCursorLabel(y)
+      }
 
-    window.addEventListener('mousemove', (e) => {
-      const { clientX, clientY } = e;
-      moveItems(clientX, clientY)
-    })
-  }, [])
+      const mouseMoveHandler = (e) => {
+        const { clientX, clientY } = e;
+        moveItems(clientX, clientY)
+      }
+
+      window.addEventListener('mousemove', mouseMoveHandler)
+      
+      // Sliding track animation
+      gsap.to(modalContainer.current.firstChild, {
+        top: index * -100 + "%",
+        duration: 0.5,
+        ease: "power2.inOut"
+      })
+
+      // Cleanup on unmount/re-run
+      return () => {
+        window.removeEventListener('mousemove', mouseMoveHandler);
+      }
+    });
+
+    return () => ctx.revert();
+  }, [index])
 
   return (
     <>
         <motion.div ref={modalContainer} variants={scaleAnimation} initial="initial" animate={active ? "enter" : "closed"} className={styles.modalContainer}>
-            <div style={{top: index * -100 + "%"}} className={styles.modalSlider}>
+            <div className={styles.modalSlider}>
             {
                 projects.map( (project, index) => {
                 const { src, color } = project

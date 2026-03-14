@@ -1,0 +1,39 @@
+.marqueeContainer{
+    position: absolute;
+    top: calc(100vh - 350px);
+    .slider{
+        position: relative;
+        white-space: nowrap;
+        p{
+            position: relative;
+            margin: 0px;
+            color: white;
+            font-size: 230px;
+            font-weight: 500;
+            padding-right: 50px;
+            &:nth-of-type(2){
+                position: absolute;
+                left: 100%;
+                top: 0;
+            }
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .marqueeContainer{
+        top: calc(100vh - 250px);
+        .slider p{
+            font-size: 150px;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .marqueeContainer{
+        top: calc(100vh - 200px);
+        .slider p{
+            font-size: 100px;
+        }
+    }
+}
