@@ -1,27 +1,41 @@
 'use client';
-import { useEffect } from 'react';
+import { useRef } from 'react';
 import gsap from 'gsap';
 import { useLenis } from '@studio-freight/react-lenis';
 
 /**
  * useVelocitySync Hook
- * Maps Lenis scroll velocity to GSAP timeline timeScale
- * 
- * @param {Object} timelineRef - Ref holding the GSAP timeline
- * @param {Number} baseScale - Starting timeScale (default: 1)
- * @param {Number} maxScale - Maximum timeScale (default: 10)
+ * Maps Lenis scroll velocity to a GSAP timeline's timeScale.
+ * On fast scroll: timeScale surges.
+ * After scroll stops: it decays back to baseScale with a power3.out ease.
+ * This creates the "heavy" physical feel of the original site.
  */
-export default function useVelocitySync(timelineRef, baseScale = 1, maxScale = 10) {
+export default function useVelocitySync(timelineRef, baseScale = 1, maxScale = 8) {
+    const decayTween = useRef(null);
+
     useLenis(({ velocity }) => {
-        if (timelineRef.current) {
-            // Map absolute velocity (0 to ~100) to timeScale (1 to 10)
-            // velocity * 0.1 is a common multiplier for hero marquees
-            const targetScale = Math.min(baseScale + Math.abs(velocity * 0.1), maxScale);
+        if (!timelineRef.current) return;
+
+        const absVelocity = Math.abs(velocity);
+
+        if (absVelocity > 0.1) {
+            // Kill any decay in progress — a new surge is happening
+            if (decayTween.current) decayTween.current.kill();
+
+            const surge = Math.min(baseScale + absVelocity * 0.1, maxScale);
 
             gsap.to(timelineRef.current, {
-                timeScale: targetScale,
-                duration: 0.5,
-                ease: "power2.out"
+                timeScale: surge,
+                duration: 0.3,
+                ease: 'power2.out',
+            });
+
+            // Schedule decay back to baseScale
+            decayTween.current = gsap.to(timelineRef.current, {
+                timeScale: baseScale,
+                duration: 1.2,
+                ease: 'power3.out',
+                delay: 0.3,
             });
         }
     });
