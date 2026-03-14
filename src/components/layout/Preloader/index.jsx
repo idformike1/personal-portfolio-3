@@ -1,6 +1,8 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import styles from './style.module.scss';
 
 const words = ["Hello", "Bonjour", "Ciao", "Olà", "Schalom", "Hallo", "नमस्ते", "Hello"];
@@ -10,6 +12,9 @@ export default function Preloader({ finishLoading }) {
     const [dimension, setDimension] = useState({ width: 0, height: 0 });
     const [isMounted, setIsMounted] = useState(false);
     const [hasSeenIntro, setHasSeenIntro] = useState(true);
+    
+    const container = useRef(null);
+    const path = useRef(null);
 
     useEffect(() => {
         setIsMounted(true);
@@ -24,6 +29,7 @@ export default function Preloader({ finishLoading }) {
         }
     }, []);
 
+    // Word roll logic
     useEffect(() => {
         if (!isMounted || hasSeenIntro) return;
         if (index === words.length - 1) return;
@@ -33,38 +39,44 @@ export default function Preloader({ finishLoading }) {
         return () => clearTimeout(timer);
     }, [index, isMounted, hasSeenIntro]);
 
-    const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height + 300} 0 ${dimension.height}  L0 0`;
-    const targetPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height} 0 ${dimension.height}  L0 0`;
+    // Master GSAP Exit Timeline
+    useGSAP(() => {
+        if (!isMounted || hasSeenIntro || index !== words.length - 1) return;
 
-    const curve = {
-        initial: {
-            d: initialPath,
-            transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] }
-        },
-        exit: {
-            d: targetPath,
-            transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1], delay: 0.3 }
-        }
-    };
+        const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height + 300} 0 ${dimension.height}  L0 0`;
+        const targetPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height} 0 ${dimension.height}  L0 0`;
 
-    if (!isMounted || hasSeenIntro) return null;
-
-    return (
-        <motion.div
-            variants={{
-                initial: { top: 0 },
-                exit: { 
-                    top: "-100vh",
-                    transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.2 }
-                }
-            }}
-            initial="initial"
-            exit="exit"
-            onAnimationComplete={() => {
+        const tl = gsap.timeline({
+            delay: 0.2,
+            onComplete: () => {
                 sessionStorage.setItem('seenIntro', 'true');
                 document.body.style.overflow = 'auto';
                 if (finishLoading) finishLoading();
-            }}
+            }
+        });
+
+        tl.set(container.current, { pointerEvents: "all" })
+          .to(container.current, {
+              yPercent: -100,
+              duration: 0.8,
+              ease: "power4.inOut"
+          })
+          .to(path.current, {
+              attr: { d: targetPath },
+              duration: 0.8,
+              ease: "power4.inOut"
+          }, "<")
+          .set(container.current, { pointerEvents: "none" }); // Fail-safe frame
+
+    }, { dependencies: [index, isMounted, hasSeenIntro, dimension], scope: container });
+
+    if (!isMounted || hasSeenIntro) return null;
+
+    const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height + 300} 0 ${dimension.height}  L0 0`;
+
+    return (
+        <div 
+            ref={container} 
             className={styles.introduction}
             style={{ zIndex: 999 }}
         >
@@ -82,14 +94,10 @@ export default function Preloader({ finishLoading }) {
                         {words[index]}
                     </motion.p>
                     <svg>
-                        <motion.path
-                            variants={curve}
-                            initial="initial"
-                            exit="exit"
-                        ></motion.path>
+                        <path ref={path} d={initialPath}></path>
                     </svg>
                 </>
             )}
-        </motion.div>
+        </div>
     );
 }

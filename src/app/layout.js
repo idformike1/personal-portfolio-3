@@ -17,12 +17,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <AnimatePresence mode='wait'>
-          {isLoading && <Preloader finishLoading={() => setIsLoading(false)} />}
-        </AnimatePresence>
-        <SmoothScroll>
-          {!isLoading && children}
-        </SmoothScroll>
+        {isLoading ? (
+          <Preloader finishLoading={() => setIsLoading(false)} />
+        ) : (
+          <SmoothScroll>
+            {children}
+          </SmoothScroll>
+        )}
       </body>
     </html>
   )
