@@ -1,11 +1,28 @@
 .main{
-    position: fixed; // Fixed like Snellenberg
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 9999;
+    z-index: 100000;
     pointer-events: none;
-    mix-blend-mode: difference; // Theme-agnostic visibility
+
+    // Homepage theme (White text on dark hero)
+    &.homepage {
+        .header {
+            color: white !important;
+            .logo, .nav .el a { color: white !important; }
+            .nav .el .indicator { background-color: white !important; }
+        }
+    }
+
+    // Internal theme (Black text on white pages)
+    &.internal {
+        .header {
+            color: #1c1d20 !important;
+            .logo, .nav .el a { color: #1c1d20 !important; }
+            .nav .el .indicator { background-color: #1c1d20 !important; }
+        }
+    }
 }
 
 .header{
@@ -106,7 +123,7 @@
     right: clamp(1.5rem, 5vw, 5rem);
     top: 0; // Correct placement
     margin: 30px;
-    z-index: 9999;
+    z-index: 100001;
     width: 80px;
     height: 80px;
     border-radius: 50%;

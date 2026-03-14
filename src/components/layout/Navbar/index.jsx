@@ -50,7 +50,7 @@ export default function Navbar() {
 
   return (
     <>
-      <div className={styles.main}>
+    <div className={`${styles.main} ${pathname === '/' ? styles.homepage : styles.internal}`}>
         <div className={styles.header}>
           <Magnetic>
             <Link href="/" className={styles.logo}>
