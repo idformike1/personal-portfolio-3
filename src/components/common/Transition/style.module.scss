@@ -3,7 +3,7 @@
     left: 0;
     width: 100vw;
     height: calc(100vh + 300px);
-    overflow: visible;
+    overflow: visible !important;
     background: transparent;
     z-index: 1000;
     pointer-events: none;
