@@ -12,6 +12,7 @@
         position: absolute;
         top: calc(100vh - 350px);
         z-index: 2;
+        overflow: hidden; // Stops layout bleeding
 
         @media (max-width: 1024px) {
             top: calc(100vh - 250px);

@@ -21,7 +21,9 @@ export default function RootLayout({ children }) {
           <Preloader finishLoading={() => setIsLoading(false)} />
         ) : (
           <SmoothScroll>
-            {children}
+            <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+              {children}
+            </main>
           </SmoothScroll>
         )}
       </body>

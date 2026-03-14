@@ -53,7 +53,7 @@ export default function Transition({children}) {
             });
 
             // Phase 1: Entry Sweep (Bottom -> 0)
-            tl.set(container.current, { top: "100vh", pointerEvents: "all" })
+            tl.set(container.current, { top: "100vh", pointerEvents: "auto" })
               .call(() => setIsContentVisible(false)) // Correct state reset at start
               .set(path.current, { attr: { d: pathA } })
               .set(labelRef.current, { opacity: 0, y: 50 })
@@ -114,7 +114,7 @@ export default function Transition({children}) {
 
     return (
         <>
-            <div ref={container} className={styles.transitionContainer}>
+            <div ref={container} className={styles.transitionContainer} style={{ pointerEvents: 'none' }}>
                 <div ref={labelRef} className={styles.label}>
                     • {label}
                 </div>
