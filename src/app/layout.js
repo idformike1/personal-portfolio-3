@@ -4,6 +4,8 @@ import { AnimatePresence } from 'framer-motion';
 import './globals.scss'
 import SmoothScroll from '@/components/common/SmoothScroll'
 import Preloader from '@/components/layout/Preloader'
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
 
 export default function RootLayout({ children }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,9 +23,11 @@ export default function RootLayout({ children }) {
           <Preloader finishLoading={() => setIsLoading(false)} />
         ) : (
           <SmoothScroll>
+            <Navbar />
             <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
               {children}
             </main>
+            <Footer />
           </SmoothScroll>
         )}
       </body>

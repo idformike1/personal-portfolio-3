@@ -105,8 +105,21 @@ export default function Transition({children}) {
                 }, "<"); 
         });
 
-        return () => ctx.revert();
-    }, [isMounted, pathname]);
+            // Safety Guard: Force 'Black Curtain' to drop if site hangs (e.g., 404)
+            const safetyTimeout = setTimeout(() => {
+                if (!isContentVisible) {
+                    setIsContentVisible(true);
+                    if (container.current) {
+                        gsap.set(container.current, { top: "-100vh", pointerEvents: "none" });
+                    }
+                }
+            }, 2000);
+
+            return () => {
+                ctx.revert();
+                clearTimeout(safetyTimeout);
+            };
+        }, [isMounted, pathname]);
 
     if (!isMounted) return null;
 
