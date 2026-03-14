@@ -26,20 +26,9 @@ export default function Transition({children}) {
     useLayoutEffect(() => {
         if (!isMounted || !container.current || !path.current) return;
 
-        // Master Node Symmetry: Strict M-L-L-Q-Z Blueprint (viewBox 0 0 100 100)
-        // Format: M (bottom-left) L (bottom-right) L (top-right) Q (top-mid) (top-left) Z
-        
-        // Start: Flat line at the very bottom
-        const initialPath = `M0,100 L100,100 L100,100 Q50,100 0,100 Z`;
-        
-        // Transition 1 -> 2: Entry Dome
-        const domePath = `M0,100 L100,100 L100,0 Q50,-50 0,0 Z`;
-        
-        // State 2: Hold (Zeroed Flat curve) - Essential for non-snapping morphs
-        const targetPath = `M0,100 L100,100 L100,0 Q50,0 0,0 Z`;
-        
-        // Transition 2 -> 3: Exit Suction
-        const exitPath = `M0,100 L100,100 L100,100 Q50,150 0,100 Z`;
+        // Transition Reset: Geometric Stability Blueprint
+        // Using a solid rectangle for 100% stable movement (No Bezier Morphing)
+        const rectanglePath = `M0,0 L100,0 L100,100 L0,100 Z`;
 
         let ctx = gsap.context(() => {
             const tl = gsap.timeline({
@@ -50,7 +39,7 @@ export default function Transition({children}) {
                 }
             });
 
-            // master set: pin container to left:0, width:100vw to kill diagonal wedge
+            // Master Set: Pin stability
             gsap.set(container.current, { 
                 left: 0, 
                 width: "100vw", 
@@ -58,8 +47,8 @@ export default function Transition({children}) {
                 pointerEvents: "all" 
             });
 
-            // Phase 1: Entry (Vertical Sweep + Dome)
-            tl.set(path.current, { attr: { d: initialPath } })
+            // Phase 1: Entry Sweep (Bottom -> 0)
+            tl.set(path.current, { attr: { d: rectanglePath } })
               .set(labelRef.current, { opacity: 0, y: 50 })
               .set(".motion-wrapper", { y: 0 })
               
@@ -67,16 +56,6 @@ export default function Transition({children}) {
                   top: "0vh",
                   duration: 0.8,
                   ease: "power4.inOut"
-              })
-              .to(path.current, {
-                  attr: { d: domePath },
-                  duration: 0.4,
-                  ease: "power4.out"
-              }, "<")
-              .to(path.current, {
-                  attr: { d: targetPath },
-                  duration: 0.4,
-                  ease: "power4.in"
               })
               
               // Phase 2: Label Reveal (Hold)
@@ -87,7 +66,7 @@ export default function Transition({children}) {
                   ease: "power4.out"
               }, "-=0.2")
               
-              // Phase 3: Exit Suction + Parallax Sync
+              // Phase 3: Exit Sweep + Parallax Sync
               .to(labelRef.current, {
                   opacity: 0,
                   y: -50,
@@ -100,13 +79,8 @@ export default function Transition({children}) {
                   duration: 0.8,
                   ease: "power4.inOut"
               })
-              .to(path.current, {
-                  attr: { d: exitPath },
-                  duration: 0.8,
-                  ease: "power4.inOut"
-              }, "<")
               .fromTo(".motion-wrapper", 
-                { y: "15vh" },
+                { y: "10vh" }, // Adjusted to user Blueprint
                 {
                     y: 0,
                     duration: 0.8,
