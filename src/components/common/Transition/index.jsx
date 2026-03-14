@@ -26,11 +26,11 @@ export default function Transition({children}) {
     useLayoutEffect(() => {
         if (!isMounted || !container.current || !path.current) return;
 
-        // Corrected Physics for 100x100 ViewBox
-        // initialCurve: Dome effect (Q point has negative Y to push UP)
-        const initialCurve = `M0 100 Q50 -50 100 100 L100 100 L0 100`; 
-        const flatPath = `M0 100 Q50 100 100 100 L100 0 L0 0`;
-        const suctionCurve = `M0 0 Q50 100 100 0 L100 0 L0 0`;
+        // Corrected Physics based on User Directive (0 to 100 scale)
+        // initialCurve: Dome effect (Q point has negative Y to push UP outside viewBox)
+        const initialCurve = `M 0 0 Q 50 -100 100 0 L 100 100 L 0 100 Z`; 
+        const flatPath = `M 0 0 Q 50 0 100 0 L 100 100 L 0 100 Z`;
+        const suctionCurve = `M 0 0 Q 50 100 100 0 L 100 0 L 0 0 Z`;
 
         let ctx = gsap.context(() => {
             const tl = gsap.timeline({
@@ -45,7 +45,7 @@ export default function Transition({children}) {
             tl.set(container.current, { yPercent: 100, pointerEvents: "all" })
               .set(path.current, { attr: { d: initialCurve } })
               .set(labelRef.current, { opacity: 0, y: 50 })
-              .set(pageContentRef.current, { y: 0 }) // Content is static at start
+              .set(pageContentRef.current, { y: 0 })
               
               .to(container.current, {
                   yPercent: 0,
@@ -90,7 +90,7 @@ export default function Transition({children}) {
                     y: 0,
                     duration: 0.8,
                     ease: "power4.inOut"
-                }, "<"); // Perfect Parallax Sync
+                }, "<"); 
         }, container);
 
         return () => ctx.revert();
@@ -106,7 +106,7 @@ export default function Transition({children}) {
                 <div ref={labelRef} className={styles.label}>
                     • {label}
                 </div>
-                <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
                     <path ref={path}></path>
                 </svg>
             </div>
