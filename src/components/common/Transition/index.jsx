@@ -58,7 +58,7 @@ export default function Transition({children}) {
                   duration: 0.4,
                   ease: "power4.inOut"
               })
-              .call(() => setIsContentVisible(true)) // The Pivot
+              .call(() => setIsContentVisible(true), null, "+=0.1") // The Pivot with 0.1s safety buffer
               .to(labelRef.current, {
                   opacity: 1,
                   y: 0,
