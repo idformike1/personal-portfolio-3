@@ -1,14 +1,46 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styles from './style.module.scss';
 import { AnimatePresence } from 'framer-motion';
 import Nav from './Nav';
 import { usePathname } from 'next/navigation';
 import Magnetic from '@/components/common/Magnetic';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 export default function Navbar() {
   const [isActive, setIsActive] = useState(false);
   const pathname = usePathname();
+  const button = useRef(null);
+  const nav = useRef(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    // Initial state: Hamburger hidden
+    gsap.set(button.current, { scale: 0 });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: document.documentElement,
+        start: 0,
+        end: 150,
+        onLeave: () => {
+          gsap.to(button.current, { scale: 1, duration: 0.3, ease: "back.out(1.7)" });
+          gsap.to(nav.current, { opacity: 0, pointerEvents: "none", duration: 0.2 });
+        },
+        onEnterBack: () => {
+          gsap.to(button.current, { scale: 0, duration: 0.3, ease: "back.in(1.7)" });
+          gsap.to(nav.current, { opacity: 1, pointerEvents: "auto", duration: 0.2 });
+          setIsActive(false);
+        }
+      }
+    });
+
+    return () => {
+      if (ScrollTrigger.getById('nav-trigger')) ScrollTrigger.getById('nav-trigger').kill();
+    };
+  }, []);
 
   useEffect( () => {
     if(isActive) setIsActive(false)
@@ -28,7 +60,7 @@ export default function Navbar() {
             </div>
           </div>
         </Magnetic>
-        <div className={styles.nav}>
+        <div ref={nav} className={styles.nav}>
           <Magnetic>
             <div className={styles.el}>
               <a>Work</a>
@@ -50,7 +82,7 @@ export default function Navbar() {
         </div>
       </div>
     </div>
-    <div onClick={() => {setIsActive(!isActive)}} className={styles.button}>
+    <div ref={button} onClick={() => {setIsActive(!isActive)}} className={styles.button}>
         <div className={`${styles.burger} ${isActive ? styles.burgerActive : ""}`}></div>
     </div>
     <AnimatePresence mode="wait">
