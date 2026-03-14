@@ -4,15 +4,19 @@
     height: 100vh;
     width: 100%;
     overflow: hidden;
-    align-items: center;
-    justify-content: center;
-    background-color: #000;
+    align-items: flex-end;
+    justify-content: flex-start;
+    background-color: #222;
+    // Override global section padding
+    padding: 0 !important;
 
     .marqueePosition {
-        position: relative;
-        margin-top: 20vh;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
         z-index: 10;
-        overflow: hidden; 
+        overflow: hidden;
     }
 
     .background {
@@ -22,40 +26,39 @@
         width: 100%;
         height: 100%;
         z-index: 1;
-        overflow: hidden; // Reveal parent boundary
+        overflow: hidden;
 
         img {
             object-fit: cover;
-            opacity: 0.8;
-            scale: 1.2; // Initial scale for parallax buffer
+            opacity: 0.85;
+            scale: 1.05;
         }
     }
 
     .content {
-        position: relative;
+        position: absolute;
         z-index: 10;
         width: 100%;
         height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
         pointer-events: none;
 
         .copy {
+            // Positioned bottom-right like the original
             position: absolute;
-            left: 5vw;
-            top: 50%;
-            transform: translateY(-50%);
+            right: clamp(2rem, 5vw, 5rem);
+            bottom: clamp(3rem, 8vh, 8rem);
             color: #fff;
-            mix-blend-mode: difference;
+            text-align: right;
 
             p {
                 margin: 0;
-                font-size: var(--font-size-hero-title);
-                font-weight: 400;
-                text-transform: uppercase;
-                line-height: 1.1; // Prevent clipping
-                letter-spacing: 0.02em;
+                font-size: clamp(13px, 1.2vw, 18px);
+                font-weight: 300;
+                // NO uppercase — original is sentence case
+                text-transform: none;
+                line-height: 1.5;
+                letter-spacing: 0.01em;
+                opacity: 0.9;
             }
         }
     }

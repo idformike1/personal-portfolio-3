@@ -1,46 +1,31 @@
 .marqueeContainer {
     position: absolute;
-    top: calc(100vh - 350px);
+    bottom: 0;
+    left: 0;
     width: 100vw;
-    overflow: hidden; // Reveal parent boundary
+    overflow: hidden;
+    z-index: 10;
     
     .sliderWrapper {
         position: relative;
         white-space: nowrap;
         display: flex;
-        will-change: transform; // GPU acceleration
+        will-change: transform;
         
         .slider {
             display: flex;
             align-items: center;
             
             p {
-                margin: 0px;
+                margin: 0;
                 color: white;
-                font-size: 230px;
+                font-size: clamp(80px, 15vw, 230px);
                 font-weight: 500;
-                padding-right: 50px;
-                text-transform: uppercase;
+                padding-right: 40px;
+                // Match original: sentence case, NOT uppercase
+                text-transform: none;
                 line-height: 1;
             }
-        }
-    }
-}
-
-@media (max-width: 1024px) {
-    .marqueeContainer {
-        top: calc(100vh - 250px);
-        .slider p {
-            font-size: 150px;
-        }
-    }
-}
-
-@media (max-width: 768px) {
-    .marqueeContainer {
-        top: calc(100vh - 200px);
-        .slider p {
-            font-size: 100px;
         }
     }
 }

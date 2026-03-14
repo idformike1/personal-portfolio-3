@@ -1,13 +1,21 @@
-.main{
-    padding: 0px 200px;
+.main {
+    padding: 0 200px;
+
+    @media (max-width: 768px) {
+        padding: 0 24px;
+    }
 }
 
-.body{
+.body {
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
     margin-top: 100px;
-    margin-bottom: 100px;
+    margin-bottom: 60px;
+}
+
+.moreWork {
+    display: flex;
+    justify-content: center;
+    padding: 60px 0 120px;
 }

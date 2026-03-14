@@ -1,5 +1,5 @@
 .contact {
-    color: white; 
+    color: white;
     background-color: #1c1d20;
     display: flex;
     flex-direction: column;
@@ -9,6 +9,10 @@
     position: relative;
     z-index: 50;
 
+    @media (max-width: 1024px) {
+        padding: 100px 40px 40px;
+    }
+
     .body {
         width: 100%;
         max-width: 1400px;
@@ -16,7 +20,7 @@
         .title {
             position: relative;
             padding-bottom: 100px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
             .flexRow {
                 display: flex;
@@ -36,6 +40,7 @@
                     position: relative;
                     border-radius: 50%;
                     overflow: hidden;
+                    flex-shrink: 0;
 
                     img {
                         object-fit: cover;
@@ -44,17 +49,19 @@
             }
 
             h2 {
-                font-size: 5vw;
-                margin: 0px;
+                // Sentence case — matches original (no text-transform)
+                font-size: clamp(3rem, 8vw, 7vw);
+                margin: 0;
                 font-weight: 300;
-                text-transform: uppercase;
                 color: white;
+                line-height: 1.1;
             }
 
             .buttonContainer {
-                position: relative; // Removed absolute
+                position: relative;
                 display: flex;
                 align-items: center;
+                flex-shrink: 0;
             }
 
             svg {
@@ -75,6 +82,11 @@
             justify-content: space-between;
             margin-top: 150px;
 
+            @media (max-width: 768px) {
+                flex-direction: column;
+                gap: 40px;
+            }
+
             div {
                 display: flex;
                 gap: 50px;
@@ -92,6 +104,9 @@
 
                     p {
                         cursor: pointer;
+                        font-size: 14px;
+                        font-weight: 300;
+                        color: white;
                     }
                 }
             }
