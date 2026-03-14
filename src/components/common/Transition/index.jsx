@@ -26,11 +26,13 @@ export default function Transition({children}) {
     useLayoutEffect(() => {
         if (!isMounted || !container.current || !path.current) return;
 
-        // Corrected Physics based on User Directive (0 to 100 scale)
-        // initialCurve: Dome effect (Q point has negative Y to push UP outside viewBox)
-        const initialCurve = `M 0 0 Q 50 -100 100 0 L 100 100 L 0 100 Z`; 
-        const flatPath = `M 0 0 Q 50 0 100 0 L 100 100 L 0 100 Z`;
-        const suctionCurve = `M 0 0 Q 50 100 100 0 L 100 0 L 0 0 Z`;
+        // High-Fidelity Path Morphs (Snellenberg Spec)
+        // Entry Dome: M0 100 Q50 -50 100 100 L100 200 L0 200 Z -> flat
+        const initialPath = `M0 100 Q50 -50 100 100 L100 200 L0 200 Z`;
+        const targetPath = `M0 0 Q50 0 100 0 L100 200 L0 200 Z`;
+        
+        // Exit Suction: Bottom edge pulls up
+        const exitPath = `M0 0 Q50 0 100 0 L100 100 Q50 -50 0 100 Z`;
 
         let ctx = gsap.context(() => {
             const tl = gsap.timeline({
@@ -41,24 +43,24 @@ export default function Transition({children}) {
                 }
             });
 
-            // Stage 1: Entry Sweep (The Dome)
-            tl.set(container.current, { yPercent: 100, pointerEvents: "all" })
-              .set(path.current, { attr: { d: initialCurve } })
+            // Phase 1: Entry (Bottom -> 0)
+            tl.set(container.current, { top: "100vh", pointerEvents: "all" })
+              .set(path.current, { attr: { d: initialPath } })
               .set(labelRef.current, { opacity: 0, y: 50 })
               .set(pageContentRef.current, { y: 0 })
               
               .to(container.current, {
-                  yPercent: 0,
+                  top: "0vh",
                   duration: 0.8,
                   ease: "power4.inOut"
               })
               .to(path.current, {
-                  attr: { d: flatPath },
+                  attr: { d: targetPath },
                   duration: 0.8,
                   ease: "power4.inOut"
               }, "<")
               
-              // Stage 2: Label Reveal (Hold)
+              // Phase 2: Label Reveal (Hold)
               .to(labelRef.current, {
                   opacity: 1,
                   y: 0,
@@ -66,7 +68,7 @@ export default function Transition({children}) {
                   ease: "power4.out"
               }, "-=0.2")
               
-              // Stage 3: Exit Sweep + Parallax Sync
+              // Phase 3: Exit (0 -> Top)
               .to(labelRef.current, {
                   opacity: 0,
                   y: -50,
@@ -75,12 +77,12 @@ export default function Transition({children}) {
                   delay: 0.5
               })
               .to(container.current, {
-                  yPercent: -100,
+                  top: "-100vh",
                   duration: 0.8,
                   ease: "power4.inOut"
               })
               .to(path.current, {
-                  attr: { d: suctionCurve },
+                  attr: { d: exitPath },
                   duration: 0.8,
                   ease: "power4.inOut"
               }, "<")
