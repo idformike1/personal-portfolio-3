@@ -7,10 +7,43 @@ import styles from './style.module.scss';
 import Marquee from './Marquee';
 
 export default function Hero() {
+    const background = useRef(null);
+    const image = useRef(null);
+
+    useEffect(() => {
+        // Mobile Guard: Disable parallax on touch devices
+        if (window.matchMedia("(pointer: coarse)").matches) return;
+
+        let ctx = gsap.context(() => {
+            const xTo = gsap.quickTo(image.current, "x", { duration: 1.2, ease: "power3.out" });
+            const yTo = gsap.quickTo(image.current, "y", { duration: 1.2, ease: "power3.out" });
+
+            const handleMouseMove = (e) => {
+                const { clientX, clientY } = e;
+                const { width, height } = window;
+                
+                // Calculate distance from center (normalized -1 to 1)
+                const x = (clientX / width - 0.5) * 2;
+                const y = (clientY / height - 0.5) * 2;
+
+                // Inverse movement: mouse Right -> image Left (multiplier 50 for depth)
+                xTo(x * -50);
+                yTo(y * -50);
+            };
+
+            window.addEventListener("mousemove", handleMouseMove);
+
+            return () => window.removeEventListener("mousemove", handleMouseMove);
+        });
+
+        return () => ctx.revert();
+    }, []);
+
     return (
         <section className={styles.hero}>
-            <div className={styles.background}>
+            <div ref={background} className={styles.background}>
                 <Image 
+                    ref={image}
                     src="/images/hero_portrait.png"
                     fill={true}
                     alt="Hero Portrait"
