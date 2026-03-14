@@ -1,0 +1,36 @@
+.main {
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    white-space: nowrap;
+    position: absolute; /* Added from the instruction */
+    top: calc(100vh - 25vw); /* Modified from original */
+    width: 100vw; /* Added from the instruction */
+    z-index: 3; /* Added from the instruction */
+
+    .sliderContainer {
+        position: relative; /* Modified from original */
+        white-space: nowrap; /* Existing */
+
+        .slider {
+            position: relative; /* Existing */
+            display: flex; /* Added from the instruction */
+
+            p {
+                position: relative; /* Existing */
+                margin: 0; /* Modified from 0px */
+                font-size: clamp(100px, 15vw, 250px); /* Modified from 230px, implements clamp() */
+                font-weight: 500; /* Existing */
+                color: #fff; /* Modified from white */
+                padding-right: 50px; /* Existing */
+                line-height: 1; /* Added from the instruction */
+
+                &:nth-of-type(2) {
+                    position: absolute; /* Existing */
+                    left: 100%; /* Existing */
+                    top: 0; /* Existing */
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,56 @@
+.modalContainer {
+    height: 350px;
+    width: 400px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: white;
+    overflow: hidden;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+
+    .modalSlider {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        // Logic handled by transition: top in JS is replaced by GSAP for parity
+
+        .modal {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img {
+                height: 250px;
+                width: auto;
+            }
+        }
+    }
+}
+
+.cursor, .cursorLabel {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #455ce9;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 300;
+    pointer-events: none;
+}
+
+.cursorLabel {
+    background-color: transparent;
+}
