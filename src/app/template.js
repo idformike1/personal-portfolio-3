@@ -4,7 +4,7 @@ import Transition from '@/components/common/Transition';
 export default function Template({ children }) {
     return (
         <Transition>
-            <div className="incoming-page">
+            <div className="motion-wrapper">
                 {children}
             </div>
         </Transition>

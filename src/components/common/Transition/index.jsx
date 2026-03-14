@@ -26,13 +26,20 @@ export default function Transition({children}) {
     useLayoutEffect(() => {
         if (!isMounted || !container.current || !path.current) return;
 
-        // LOOCKED Entry Math (Approved)
-        const initialPath = `M0 100 Q50 -50 100 100 L100 200 Q50 200 0 200 Z`;
-        const targetPath = `M0 0 Q50 0 100 0 L100 200 Q50 200 0 200 Z`;
+        // Transition Logic Reset: Vertical Sweep Math (0-100 ViewBox)
+        // Format: M (bottom-left) L (bottom-right) L (top-right) Q (top-mid) (top-left) Z
         
-        // RESTORED Sprint 1 Exit Math (Deep Suction)
-        // Adjusting Q y to 150 for deeper drag during the -100vh lift
-        const exitPath = `M0 0 Q50 150 100 0 L100 150 L0 150 Z`;
+        // Start: Flat line at the very bottom
+        const initialPath = `M0,100 L100,100 L100,100 Q50,100 0,100 Z`;
+        
+        // Sweep: Side lines L extend to top, Q creates upward convex dome
+        const domePath = `M0,100 L100,100 L100,0 Q50,-50 0,0 Z`;
+        
+        // Final: Flat rectangle covering screen
+        const targetPath = `M0,100 L100,100 L100,0 Q50,0 0,0 Z`;
+        
+        // Suction (Exit): Mirrored nodes for smooth morph
+        const exitPath = `M0,0 L100,0 L100,0 Q50,150 0,0 Z`;
 
         let ctx = gsap.context(() => {
             const tl = gsap.timeline({
@@ -43,11 +50,18 @@ export default function Transition({children}) {
                 }
             });
 
-            // Phase 1: Entry (Bottom -> 0) - LOCKED
-            tl.set(container.current, { top: "100vh", pointerEvents: "all" })
-              .set(path.current, { attr: { d: initialPath } })
+            // Phase 0: Reset pinning to kill "wedge" diagonal glitch
+            gsap.set(container.current, { 
+                left: 0, 
+                width: "100vw", 
+                top: "100vh", 
+                pointerEvents: "all" 
+            });
+
+            // Phase 1: Entry (Vertical Sweep: Bottom -> 0)
+            tl.set(path.current, { attr: { d: initialPath } })
               .set(labelRef.current, { opacity: 0, y: 50 })
-              .set(pageContentRef.current, { y: 0 })
+              .set(".motion-wrapper", { y: 0 })
               
               .to(container.current, {
                   top: "0vh",
@@ -55,10 +69,15 @@ export default function Transition({children}) {
                   ease: "power4.inOut"
               })
               .to(path.current, {
-                  attr: { d: targetPath },
-                  duration: 0.8,
-                  ease: "power4.inOut"
+                  attr: { d: domePath },
+                  duration: 0.4,
+                  ease: "power4.out"
               }, "<")
+              .to(path.current, {
+                  attr: { d: targetPath },
+                  duration: 0.4,
+                  ease: "power4.in"
+              })
               
               // Phase 2: Label Reveal (Hold)
               .to(labelRef.current, {
@@ -68,13 +87,13 @@ export default function Transition({children}) {
                   ease: "power4.out"
               }, "-=0.2")
               
-              // Phase 3: Exit (0 -> Top) + Parallax Sync
+              // Phase 3: Exit (0 -> Top)
               .to(labelRef.current, {
                   opacity: 0,
                   y: -50,
                   duration: 0.4,
                   ease: "power4.in",
-                  delay: 0.5
+                  delay: 0.2
               })
               .to(container.current, {
                   top: "-100vh",
@@ -86,8 +105,8 @@ export default function Transition({children}) {
                   duration: 0.8,
                   ease: "power4.inOut"
               }, "<")
-              .fromTo(pageContentRef.current, 
-                { y: "10vh" },
+              .fromTo(".motion-wrapper", 
+                { y: "15vh" },
                 {
                     y: 0,
                     duration: 0.8,

@@ -1,7 +1,7 @@
 .transitionContainer {
     position: fixed;
-    left: 0;
-    width: 100vw;
+    left: 0 !important;
+    width: 100vw !important;
     height: 100vh;
     overflow: visible !important;
     background: transparent;
