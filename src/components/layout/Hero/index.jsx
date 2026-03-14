@@ -58,7 +58,7 @@ export default function Hero() {
 
             {/* The ONE marquee — sits at the bottom edge of the hero */}
             <InfiniteMarquee
-                text="Dennis Snellenberg — "
+                text="Sports — "
                 speed={20}
                 isTransitionComplete={true}
                 className={styles.marqueePosition}

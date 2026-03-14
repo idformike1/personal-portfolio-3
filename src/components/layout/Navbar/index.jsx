@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
+import Link from 'next/link';
 import styles from './style.module.scss';
 import { AnimatePresence } from 'framer-motion';
 import Nav from './Nav';
@@ -16,7 +17,7 @@ export default function Navbar() {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    
+
     // Initial state: hamburger hidden, nav links visible
     gsap.set(button.current, { scale: 0, autoAlpha: 0 });
     gsap.set(nav.current, { opacity: 1, pointerEvents: 'auto' });
@@ -26,12 +27,10 @@ export default function Navbar() {
       start: 'top top',
       end: '+=150',
       onLeave: () => {
-        // Scrolled past 150px — show hamburger, hide links
         gsap.to(button.current, { scale: 1, autoAlpha: 1, duration: 0.3, ease: 'back.out(1.7)' });
         gsap.to(nav.current, { opacity: 0, pointerEvents: 'none', duration: 0.2 });
       },
       onEnterBack: () => {
-        // Scrolled back to top — hide hamburger, show links
         gsap.to(button.current, { scale: 0, autoAlpha: 0, duration: 0.25, ease: 'power2.in' });
         gsap.to(nav.current, { opacity: 1, pointerEvents: 'auto', duration: 0.2 });
         setIsActive(false);
@@ -49,46 +48,55 @@ export default function Navbar() {
 
   return (
     <>
-    <div className={styles.main}>
-      <div className={styles.header}>
-        <Magnetic>
-          <div className={styles.logo}>
-            <p className={styles.copyright}>©</p>
-            <div className={styles.name}>
-              <p className={styles.codeBy}>Code by</p>
-              <p className={styles.dennis}>Dennis</p>
-              <p className={styles.snellenberg}>Snellenberg</p>
-            </div>
+      <div className={styles.main}>
+        <div className={styles.header}>
+          <Magnetic>
+            <Link href="/" className={styles.logo}>
+              <p className={styles.copyright}>©</p>
+              <div className={styles.name}>
+                <p className={styles.codeBy}>Code by</p>
+                <p className={styles.dennis}>Dennis</p>
+              </div>
+            </Link>
+          </Magnetic>
+
+          {/* Desktop nav links — hidden after 150px scroll */}
+          <div ref={nav} className={styles.nav}>
+            <Magnetic>
+              <div className={styles.el}>
+                <Link href="/work">Work</Link>
+                <div className={styles.indicator}></div>
+              </div>
+            </Magnetic>
+            <Magnetic>
+              <div className={styles.el}>
+                <Link href="/about">About</Link>
+                <div className={styles.indicator}></div>
+              </div>
+            </Magnetic>
+            <Magnetic>
+              <div className={styles.el}>
+                <Link href="/contact">Contact</Link>
+                <div className={styles.indicator}></div>
+              </div>
+            </Magnetic>
           </div>
-        </Magnetic>
-        <div ref={nav} className={styles.nav}>
-          <Magnetic>
-            <div className={styles.el}>
-              <a>Work</a>
-              <div className={styles.indicator}></div>
-            </div>
-          </Magnetic>
-          <Magnetic>
-            <div className={styles.el}>
-              <a>About</a>
-              <div className={styles.indicator}></div>
-            </div>
-          </Magnetic>
-          <Magnetic>
-            <div className={styles.el}>
-              <a>Contact</a>
-              <div className={styles.indicator}></div>
-            </div>
-          </Magnetic>
         </div>
       </div>
-    </div>
-    <div ref={button} onClick={() => {setIsActive(!isActive)}} className={styles.button}>
-        <div className={`${styles.burger} ${isActive ? styles.burgerActive : ""}`}></div>
-    </div>
-    <AnimatePresence mode="wait">
+
+      {/* Hamburger — appears after 150px scroll */}
+      <div
+        ref={button}
+        onClick={() => setIsActive(!isActive)}
+        className={styles.button}
+        style={{ pointerEvents: 'auto' }}
+      >
+        <div className={`${styles.burger} ${isActive ? styles.burgerActive : ''}`}></div>
+      </div>
+
+      <AnimatePresence mode="wait">
         {isActive && <Nav />}
-    </AnimatePresence>
+      </AnimatePresence>
     </>
-  )
+  );
 }

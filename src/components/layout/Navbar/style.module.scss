@@ -2,7 +2,7 @@
     position: absolute;
     width: 100%;
     z-index: 9999;
-    pointer-events: auto !important;
+    pointer-events: none; // Block nothing by default
 }
 
 .header{
@@ -17,7 +17,11 @@
         cursor: pointer;
         align-items: center;
         gap: 5px;
+        color: white;
+        text-decoration: none;
+        pointer-events: auto !important;
         transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+        z-index: 9999;
 
         &:hover{
             transform: rotate(360deg);
@@ -59,10 +63,21 @@
         display: flex;
         align-items: center;
         gap: 40px;
+        pointer-events: auto !important;
+        z-index: 9999;
 
         .el{
             position: relative;
             cursor: pointer;
+
+            a {
+                color: white;
+                text-decoration: none;
+                pointer-events: auto !important;
+                font-size: 14px;
+                font-weight: 300;
+            }
+
             &:hover{
                 .indicator{
                     transform: scale(1);

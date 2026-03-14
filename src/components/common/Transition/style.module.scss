@@ -43,5 +43,7 @@
     width: 100vw;
     height: 100vh;
     background: #141516;
-    z-index: 90;
+    /* z-index must be BELOW Navbar (z-index 9999) */
+    z-index: 10;
+    pointer-events: none;
 }
