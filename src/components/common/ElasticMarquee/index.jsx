@@ -18,22 +18,21 @@ export default function ElasticMarquee({
     useLenis(({ velocity }) => {
         if (timeline.current) {
             // Absolute velocity mapping for surge
-            const surge = 1 + Math.abs(velocity * 0.15);
+            const surge = 1 + Math.abs(velocity * 0.1);
             
-            // Immediately apply surge and start a physical decay
-            // duration: 1.2s creates the "heavy" weight effect
+            // Snappy surge to current velocity
             gsap.to(timeline.current, {
                 timeScale: surge,
-                duration: 0.3, // Fast surge response
-                ease: "power2.out",
-                onComplete: () => {
-                    // Decay back to base speed
-                    gsap.to(timeline.current, {
-                        timeScale: 1,
-                        duration: 1.2,
-                        ease: "power3.out"
-                    });
-                }
+                duration: 0.1,
+                overwrite: true
+            });
+
+            // Slowly decay back to 1.0 (The "Heavy" Physical Buffer)
+            gsap.to(timeline.current, {
+                timeScale: 1,
+                duration: 1.2,
+                ease: "power3.out",
+                overwrite: "auto"
             });
         }
     });
