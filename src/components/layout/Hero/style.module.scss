@@ -46,7 +46,7 @@
             // Positioned bottom-right like the original
             position: absolute;
             right: clamp(2rem, 5vw, 5rem);
-            bottom: clamp(3rem, 8vh, 8rem);
+            bottom: clamp(15rem, 30vh, 30rem); // Moved significantly higher
             color: #fff;
             text-align: right;
 
