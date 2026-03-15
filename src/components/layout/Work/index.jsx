@@ -45,7 +45,7 @@ export default function Work() {
       </div>
       {/* "More work" button — matches original */}
       <div className={styles.moreWork}>
-        <Rounded backgroundColor="#1c1d20">
+        <Rounded>
           <p>More work <sup>{projects.length}</sup></p>
         </Rounded>
       </div>

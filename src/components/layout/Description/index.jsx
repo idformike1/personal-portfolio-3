@@ -9,6 +9,7 @@ import RoundedButton from '@/components/common/RoundedButton';
 export default function Description() {
     const container = useRef(null);
     const textRef = useRef(null);
+    const buttonRef = useRef(null);
     
     const lines = [
         "Helping brands to stand out in the digital",
@@ -34,6 +35,19 @@ export default function Description() {
                 }
             });
         }
+
+        if (buttonRef.current) {
+            gsap.to(buttonRef.current, {
+                y: -100,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: container.current,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true
+                }
+            });
+        }
     }, { scope: container });
 
     return (
@@ -51,7 +65,7 @@ export default function Description() {
                     <p className={styles.secondaryText}>
                         The combination of my passion for design, code & interaction positions me in a unique place in the web design world.
                     </p>
-                    <div className={styles.buttonContainer}>
+                    <div ref={buttonRef} className={styles.buttonContainer}>
                         <RoundedButton className={styles.button}>
                             <p>About me</p>
                         </RoundedButton>

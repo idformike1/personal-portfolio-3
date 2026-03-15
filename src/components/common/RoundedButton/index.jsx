@@ -6,7 +6,7 @@ import styles from './style.module.scss'
 
 export default function RoundedButton({
   children,
-  backgroundColor = '#1c1d20',
+  backgroundColor = '#455CE9',
   ...attributes
 }) {
   const circle = useRef(null)

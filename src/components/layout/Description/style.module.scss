@@ -2,13 +2,16 @@
     width: 100%;
     position: relative;
     background: #fff;
-    padding: 160px 0;
+    padding-top: 160px;
+    padding-bottom: 100px;
+    height: auto;
     color: #1c1d20;
     z-index: 2;
 
     .wrapper {
         display: flex;
         justify-content: space-between;
+        align-items: flex-start; // Shared top baseline
         margin: 0 auto;
         width: 90%;
         max-width: 1600px;
@@ -27,6 +30,8 @@
         gap: 0; // Control vertical gap explicitly
         text-align: left;
         pointer-events: none;
+        margin-top: 0; // Forced baseline
+        padding-top: 0;
 
         @media (max-width: 1024px) {
             width: 100%;
@@ -36,6 +41,7 @@
             position: relative;
             overflow: hidden;
             display: block; // Block for full-width masking
+            margin-top: 0;
             
             .lineInner {
                 font-size: 2.5vw;
@@ -44,6 +50,7 @@
                 display: block;
                 will-change: transform;
                 padding-bottom: 0.1em; // Descender protection
+                margin-top: 0;
                 
                 @media (max-width: 1024px) {
                     font-size: 7vw;
@@ -59,7 +66,8 @@
         align-items: flex-start;
         justify-content: flex-start;
         gap: 40px;
-        padding-top: 20px;
+        padding-top: 0; // Forced baseline sync with mainText
+        margin-top: 0;
 
         @media (max-width: 1024px) {
             width: 100%;
@@ -70,7 +78,8 @@
             line-height: 1.5;
             font-weight: 200;
             color: #555;
-            margin: 0;
+            margin: 0; // Baseline reset
+            padding-top: 0;
             
             @media (max-width: 1024px) {
                 font-size: 3.5vw;
@@ -78,6 +87,10 @@
         }
 
         .buttonContainer {
+            margin-top: 2.4em; // Approximately two lines of vertical offset
+            position: relative; 
+            z-index: 5;
+
             .button {
                 width: clamp(140px, 12vw, 180px) !important;
                 height: clamp(140px, 12vw, 180px) !important;
@@ -90,8 +103,8 @@
                 justify-content: center;
                 cursor: pointer;
                 border: none;
-                position: relative; // CRITICAL: Contain the absolute hover circle
-                overflow: hidden !important; // CRITICAL: Clip the absolute hover circle
+                position: relative; // Contain the blue fill
+                overflow: hidden !important; // Clip the blue fill
                 
                 p {
                     font-size: 1.1rem;
