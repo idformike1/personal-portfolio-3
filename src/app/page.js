@@ -3,7 +3,7 @@ import styles from './page.module.css';
 import Hero from '@/components/layout/Hero';
 import Description from '@/components/layout/Description';
 import Work from '@/components/layout/Work';
-import SlidingGrid from '@/components/layout/SlidingGrid';
+import SlidingGallery from '@/components/layout/SlidingGallery';
 
 // NOTE: The standalone <Marquee /> has been removed.
 // The Hero component owns its own marquee at the bottom edge — this is the correct
@@ -16,7 +16,7 @@ export default function Home() {
       <Hero />
       <Description />
       <Work />
-      <SlidingGrid />
+      <SlidingGallery />
     </main>
   );
 }
