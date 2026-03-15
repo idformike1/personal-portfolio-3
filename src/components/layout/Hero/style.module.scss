@@ -12,73 +12,93 @@
 
     .marqueePosition {
         position: absolute;
-        bottom: 0;
+        bottom: 12vh; // Reverted for overlap visibility
         left: 0;
         width: 100%;
-        z-index: 10;
+        z-index: 40; 
         overflow: hidden;
+        pointer-events: none;
+        background-color: transparent !important; 
+        background: transparent !important;
     }
 
-    .background {
+    .imageParallaxWindow {
         position: absolute;
-        top: -5vh; // Center the 110vh height
+        top: 0;
         left: 0;
         width: 100%;
-        height: 110vh; // Anti-crop height
-        z-index: 1;
-        overflow: hidden; 
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        height: 100vh;
+        z-index: 10;
+        overflow: hidden; // The strict container mask
 
         .imageWrapper {
             position: relative;
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         img {
-            object-fit: cover;
-            opacity: 0.85;
-            scale: 1.4; // Updated scale for deep parallax
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 100%;
+            height: 120% !important; // Aggressive bleed for parallax
+            object-fit: cover;
+            object-position: top center;
+            opacity: 0.85;
+            transform: scale(1.15); // The Rule of Scale
         }
     }
 
-    .copy {
+    .introTextWrapper {
         position: absolute;
-        right: clamp(2rem, 5vw, 5rem);
-        bottom: clamp(15rem, 30vh, 30rem);
-        color: #fff;
-        text-align: right;
-        z-index: 20; // Ensure selectability and layering
-        pointer-events: auto;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 20; // Corrected to Stage 3 parity
+        pointer-events: none; // Global pass-through
+        will-change: transform;
 
-        .lineMask {
-            overflow: hidden;
-            display: block;
-            padding-bottom: 5px; 
-        }
+        .copy {
+            position: absolute;
+            right: clamp(2rem, 5vw, 5rem);
+            bottom: clamp(15rem, 30vh, 30rem);
+            color: #fff;
+            text-align: right;
+            pointer-events: none; // Ensure image behind is hoverable as requested
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
 
-        p {
-            margin: 0;
-            font-size: clamp(16px, 1.5vw, 22px);
-            font-weight: 300;
-            text-transform: none;
-            line-height: 1.2;
-            letter-spacing: 0.01em;
-            opacity: 1;
-            transform: translateY(110%);
-        }
+            .svgArrow {
+                margin-bottom: 2rem;
+                display: block;
+                opacity: 0.8;
+                transform: rotate(-90deg);
+            }
 
-        .boldText {
-            font-size: clamp(24px, 2.5vw, 42px);
-            font-weight: 500;
+            .lineMask {
+                overflow: hidden;
+                display: block;
+                padding-bottom: 5px; 
+            }
+
+            p {
+                margin: 0;
+                font-size: clamp(16px, 1.5vw, 22px);
+                font-weight: 300;
+                text-transform: none;
+                line-height: 1.2;
+                letter-spacing: 0.01em;
+                opacity: 0; // Initial state for reveal
+                transform: translateY(50px); // Initial y: 50 reveal
+            }
+
+            .boldText {
+                font-size: clamp(24px, 2.5vw, 42px);
+                font-weight: 500;
+            }
         }
     }
 }

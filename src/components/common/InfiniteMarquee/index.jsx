@@ -12,19 +12,16 @@ const InfiniteMarquee = forwardRef(({
     const container = useRef(null);
     const sliderWrapper = useRef(null);
     const xPercent = useRef(0);
-    const direction = useRef(-1); // -1 for left, 1 for right
+    const direction = useRef(-1); // Default constant direction
+    const velocity = useRef(0);
 
-    // Use Lenis to detect direction and boost speed
-    useLenis(({ velocity, direction: scrollDirection }) => {
-        if (scrollDirection !== 0) {
-            // Scroll Down (1) -> Move Left (-1)
-            // Scroll Up (-1) -> Move Right (1)
-            direction.current = scrollDirection === 1 ? -1 : 1;
+    // Capture Lenis state for the physics loop
+    useLenis((lenis) => {
+        velocity.current = lenis.velocity;
+        if (lenis.direction !== 0) {
+            // Mapping: Down (1) to Left (-1), Up (-1) to Right (1)
+            direction.current = lenis.direction === 1 ? -1 : 1;
         }
-        
-        // Boost xPercent based on velocity
-        const velocityBoost = Math.abs(velocity) * 0.1;
-        xPercent.current += direction.current * velocityBoost;
     });
 
     useEffect(() => {
@@ -32,8 +29,9 @@ const InfiniteMarquee = forwardRef(({
 
         let animationId;
         const animate = () => {
-            // Base constant movement
-            xPercent.current += direction.current * speed;
+            // STRICT PHYSICS: currentX += (baseSpeed + Math.abs(velocity)) * direction
+            const moveDelta = (speed + Math.abs(velocity.current) * 0.05) * direction.current;
+            xPercent.current += moveDelta;
 
             // Seamless wrap at -50% and 0%
             if (xPercent.current <= -50) {
