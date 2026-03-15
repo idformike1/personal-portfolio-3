@@ -7,20 +7,7 @@
     align-items: flex-end;
     justify-content: flex-start;
     background-color: #222;
-    // Override global section padding
     padding: 0 !important;
-
-    .marqueePosition {
-        position: absolute;
-        bottom: 12vh; // Reverted for overlap visibility
-        left: 0;
-        width: 100%;
-        z-index: 40; 
-        overflow: hidden;
-        pointer-events: none;
-        background-color: transparent !important; 
-        background: transparent !important;
-    }
 
     .imageParallaxWindow {
         position: absolute;
@@ -28,8 +15,8 @@
         left: 0;
         width: 100%;
         height: 100vh;
-        z-index: 10;
-        overflow: hidden; // The strict container mask
+        z-index: 1;
+        overflow: hidden; 
 
         .imageWrapper {
             position: relative;
@@ -42,34 +29,78 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 120% !important; // Aggressive bleed for parallax
+            height: 120% !important;
             object-fit: cover;
             object-position: top center;
             opacity: 0.85;
-            transform: scale(1.15); // The Rule of Scale
+            transform: scale(1.15);
         }
     }
 
-    .introTextWrapper {
+    .marqueePosition {
         position: absolute;
-        top: 0;
+        bottom: 12vh;
         left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: 20; // Corrected to Stage 3 parity
-        pointer-events: none; // Global pass-through
-        will-change: transform;
+        width: 100%;
+        z-index: 10;
+        overflow: hidden;
+        pointer-events: none;
+        background-color: transparent !important; 
+        background: transparent !important;
+    }
+
+    .heroHud {
+        position: absolute;
+        top: 45%;
+        left: 0;
+        width: 100vw; // Force full viewport width
+        padding: 0; // Padding handled individually for clipping
+        display: flex;
+        justify-content: space-between; // Pill (Left) <> Freelance (Right)
+        align-items: flex-end; // Unified baseline
+        z-index: 100;
+        pointer-events: none;
+
+        .locationPill {
+            background: #1a1a1a;
+            padding: 16px 32px 16px 40px; // Larger, weighted left
+            border-radius: 0 50px 50px 0; // Cut off the left corner roundedness for "attached" look
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transform: translateX(-15px); // Submerge ~10% off screen
+
+            span {
+                font-size: clamp(16px, 1.5vw, 22px); // Bigger text
+                font-weight: 400;
+                line-height: 1.1;
+            }
+
+            .globeIcon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0.9;
+                
+                .globeSvg {
+                    width: 25px; // Bigger globe
+                    height: 25px;
+                    display: block;
+                }
+            }
+        }
 
         .copy {
-            position: absolute;
-            right: clamp(2rem, 5vw, 5rem);
-            bottom: clamp(15rem, 30vh, 30rem);
+            margin-right: 5vw; // Restored anchoring spacing
             color: #fff;
             text-align: right;
-            pointer-events: none; // Ensure image behind is hoverable as requested
             display: flex;
             flex-direction: column;
             align-items: flex-end;
+            will-change: transform;
+            /* Explicitly ensure it stays on the right if flex behaves oddly */
+            margin-left: auto; 
 
             .svgArrow {
                 margin-bottom: 2rem;
@@ -88,11 +119,10 @@
                 margin: 0;
                 font-size: clamp(16px, 1.5vw, 22px);
                 font-weight: 300;
-                text-transform: none;
                 line-height: 1.2;
                 letter-spacing: 0.01em;
-                opacity: 0; // Initial state for reveal
-                transform: translateY(50px); // Initial y: 50 reveal
+                opacity: 0;
+                transform: translateY(50px);
             }
 
             .boldText {

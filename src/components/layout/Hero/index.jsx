@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { useRef, useEffect } from 'react';
+import { useLenis } from '@studio-freight/react-lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import styles from './style.module.scss';
@@ -10,17 +11,31 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
     const sectionRef = useRef(null);
-    const windowRef = useRef(null);
     const image = useRef(null);
-    const copyRef = useRef(null); 
     const textRef = useRef([]);
 
+    const globeRef = useRef(null);
+    const globeTween = useRef(null);
+    const hudRef = useRef(null);
+
+    // Kinetic Engine: Link 8s globe spin to scroll velocity
+    useLenis((lenis) => {
+        if (globeTween.current) {
+            // Formula: Math.abs(velocity) * 0.1
+            const velocity = lenis.velocity;
+            const targetScale = Math.abs(velocity) * 0.1;
+            gsap.to(globeTween.current, { timeScale: targetScale, duration: 0.5 });
+        }
+    });
+
     useEffect(() => {
+        const handleLoad = () => ScrollTrigger.refresh();
+        window.addEventListener('load', handleLoad);
+
         if (window.matchMedia('(pointer: coarse)').matches) return;
 
         let ctx = gsap.context(() => {
-            // 1. Slow Image Parallax (Background Layer)
-            // Targeting the 120% image to move within the 100vh mask
+            // 1. Slow Image Parallax
             gsap.to(image.current, {
                 yPercent: 15,
                 ease: 'none',
@@ -32,10 +47,9 @@ export default function Hero() {
                 }
             });
 
-            // 2. Text 'Lift' (Forelayer Layer)
-            // Displacement: -400px ensures it outruns the image as requested
-            if (copyRef.current) {
-                gsap.to(copyRef.current, {
+            // 2. HUD Middle Parallax Lift
+            if (hudRef.current) {
+                gsap.to(hudRef.current, {
                     y: -400, 
                     ease: 'none',
                     scrollTrigger: {
@@ -59,6 +73,16 @@ export default function Hero() {
                 });
             }
 
+            // Kinetic Spin Initialization
+            if (globeRef.current) {
+                globeTween.current = gsap.to(globeRef.current, {
+                    rotation: 360,
+                    duration: 8,
+                    repeat: -1,
+                    ease: "none"
+                });
+            }
+
             // Subtle vertical mouse inertia on image
             const iYTo = gsap.quickTo(image.current, 'y', { duration: 1.2, ease: 'power3.out' });
             const handleMouseMove = (e) => {
@@ -69,7 +93,14 @@ export default function Hero() {
             };
 
             window.addEventListener('mousemove', handleMouseMove);
-            return () => window.removeEventListener('mousemove', handleMouseMove);
+            
+            // 4. Parallax Force-Trigger
+            ScrollTrigger.refresh(true);
+            
+            return () => {
+                window.removeEventListener('mousemove', handleMouseMove);
+                window.removeEventListener('load', handleLoad);
+            };
         });
 
         return () => ctx.revert();
@@ -83,8 +114,8 @@ export default function Hero() {
 
     return (
         <section ref={sectionRef} id="hero" className={styles.hero}>
-            {/* 1. image-parallax-window (Z-Index: 10) */}
-            <div ref={windowRef} className={styles.imageParallaxWindow}>
+            {/* 1. image-parallax-window (Z-Index: 1) */}
+            <div className={styles.imageParallaxWindow}>
                 <div className={styles.imageWrapper}>
                     <Image
                         ref={image}
@@ -97,9 +128,26 @@ export default function Hero() {
                 </div>
             </div>
 
-            {/* 2. intro-text-wrapper (Z-Index: 50) */}
-            <div className={styles.introTextWrapper}>
-                <div ref={copyRef} className={styles.copy}>
+            {/* 2. Unified Hero HUD (Z-Index: 100) */}
+            <div ref={hudRef} className={styles.heroHud}>
+                {/* Location Pill (Left HUD) */}
+                <div className={styles.locationPill}>
+                    <span>Located in the <br/> Netherlands</span>
+                    <div className={styles.globeIcon}>
+                        <svg 
+                            ref={globeRef}
+                            className={styles.globeSvg}
+                            width="20" height="20" viewBox="0 0 24 24" 
+                            fill="none" stroke="currentColor" strokeWidth="1.5"
+                        >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg>
+                    </div>
+                </div>
+
+                {/* Freelance Group (Right HUD) */}
+                <div className={styles.copy}>
                     <svg 
                         className={styles.svgArrow} 
                         width='40' 
@@ -125,7 +173,7 @@ export default function Hero() {
                 </div>
             </div>
 
-            {/* 3. Infinite Marquee (Z-Index: 40) */}
+            {/* 3. Infinite Marquee (Z-Index: 10) */}
             <InfiniteMarquee
                 text="Sports — "
                 speed={0.1}
