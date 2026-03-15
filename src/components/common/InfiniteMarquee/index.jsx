@@ -1,61 +1,57 @@
 import { useRef, useEffect, forwardRef } from 'react';
 import gsap from 'gsap';
+import { useLenis } from '@studio-freight/react-lenis';
 import styles from './style.module.scss';
-import useVelocitySync from '@/hooks/useVelocitySync';
 
-/**
- * InfiniteMarquee — Single-source scrolling text.
- * Architecture: 2 tracks, each exactly 100% of the container width.
- * We animate xPercent from 0 → -50% (not -100%) so that when track 1
- * exits left, track 2 seamlessly takes its place. Then it resets to 0.
- * 
- * DOM structure:
- *   sliderWrapper (width: 200%)
- *     track-1 (width: 50% of wrapper = 100vw) — repeated text
- *     track-2 (width: 50% of wrapper = 100vw) — identical repeated text
- * 
- * Animation: xPercent 0 → -50 → (instant reset to 0) → repeat
- * This is the correct twin-track architecture.
- */
 const InfiniteMarquee = forwardRef(({ 
     text = '', 
-    speed = 20, 
+    speed = 0.05, // Base speed multiplier
     isTransitionComplete = false,
     className = '' 
 }, ref) => {
     const container = useRef(null);
     const sliderWrapper = useRef(null);
-    const timeline = useRef(null);
+    const xPercent = useRef(0);
+    const direction = useRef(-1); // -1 for left, 1 for right
 
-    // Elastic velocity surge on scroll
-    useVelocitySync(timeline, 1, 8);
-
-    useEffect(() => {
-        let ctx = gsap.context(() => {
-            gsap.set(sliderWrapper.current, { xPercent: 0 });
-
-            timeline.current = gsap.timeline({
-                repeat: -1,
-                defaults: { ease: 'none' },
-                paused: !isTransitionComplete
-            });
-
-            // Animate exactly -50%: moves one full track-width to the left,
-            // then GSAP's repeat resets back to 0 seamlessly.
-            timeline.current.to(sliderWrapper.current, {
-                xPercent: -50,
-                duration: speed,
-            });
-        }, container);
-
-        return () => ctx.revert();
-    }, [speed, isTransitionComplete]);
-
-    useEffect(() => {
-        if (isTransitionComplete && timeline.current) {
-            timeline.current.play();
+    // Use Lenis to detect direction and boost speed
+    useLenis(({ velocity, direction: scrollDirection }) => {
+        if (scrollDirection !== 0) {
+            // Scroll Down (1) -> Move Left (-1)
+            // Scroll Up (-1) -> Move Right (1)
+            direction.current = scrollDirection === 1 ? -1 : 1;
         }
-    }, [isTransitionComplete]);
+        
+        // Boost xPercent based on velocity
+        const velocityBoost = Math.abs(velocity) * 0.1;
+        xPercent.current += direction.current * velocityBoost;
+    });
+
+    useEffect(() => {
+        if (!isTransitionComplete) return;
+
+        let animationId;
+        const animate = () => {
+            // Base constant movement
+            xPercent.current += direction.current * speed;
+
+            // Seamless wrap at -50% and 0%
+            if (xPercent.current <= -50) {
+                xPercent.current = 0;
+            } else if (xPercent.current > 0) {
+                xPercent.current = -50;
+            }
+
+            if (sliderWrapper.current) {
+                gsap.set(sliderWrapper.current, { xPercent: xPercent.current });
+            }
+
+            animationId = requestAnimationFrame(animate);
+        };
+
+        animate();
+        return () => cancelAnimationFrame(animationId);
+    }, [isTransitionComplete, speed]);
 
     return (
         <div
@@ -64,14 +60,12 @@ const InfiniteMarquee = forwardRef(({
             className={`${styles.marqueeContainer} ${className}`}
         >
             <div ref={sliderWrapper} className={styles.sliderWrapper}>
-                {/* Track 1 */}
                 <div className={styles.slider}>
                     <p>{text}</p>
                     <p>{text}</p>
                     <p>{text}</p>
                     <p>{text}</p>
                 </div>
-                {/* Track 2 — identical, creates seamless loop */}
                 <div className={styles.slider}>
                     <p>{text}</p>
                     <p>{text}</p>

@@ -21,45 +21,64 @@
 
     .background {
         position: absolute;
-        top: 0;
+        top: -5vh; // Center the 110vh height
         left: 0;
         width: 100%;
-        height: 100%;
+        height: 110vh; // Anti-crop height
         z-index: 1;
-        overflow: hidden;
+        overflow: hidden; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .imageWrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         img {
             object-fit: cover;
             opacity: 0.85;
-            scale: 1.05;
+            scale: 1.4; // Updated scale for deep parallax
+            width: 100%;
+            height: 100%;
         }
     }
 
-    .content {
+    .copy {
         position: absolute;
-        z-index: 10;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
+        right: clamp(2rem, 5vw, 5rem);
+        bottom: clamp(15rem, 30vh, 30rem);
+        color: #fff;
+        text-align: right;
+        z-index: 20; // Ensure selectability and layering
+        pointer-events: auto;
 
-        .copy {
-            // Positioned bottom-right like the original
-            position: absolute;
-            right: clamp(2rem, 5vw, 5rem);
-            bottom: clamp(15rem, 30vh, 30rem); // Moved significantly higher
-            color: #fff;
-            text-align: right;
+        .lineMask {
+            overflow: hidden;
+            display: block;
+            padding-bottom: 5px; 
+        }
 
-            p {
-                margin: 0;
-                font-size: clamp(13px, 1.2vw, 18px);
-                font-weight: 300;
-                // NO uppercase — original is sentence case
-                text-transform: none;
-                line-height: 1.5;
-                letter-spacing: 0.01em;
-                opacity: 0.9;
-            }
+        p {
+            margin: 0;
+            font-size: clamp(16px, 1.5vw, 22px);
+            font-weight: 300;
+            text-transform: none;
+            line-height: 1.2;
+            letter-spacing: 0.01em;
+            opacity: 1;
+            transform: translateY(110%);
+        }
+
+        .boldText {
+            font-size: clamp(24px, 2.5vw, 42px);
+            font-weight: 500;
         }
     }
 }
