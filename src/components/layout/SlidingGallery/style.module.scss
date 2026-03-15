@@ -5,21 +5,20 @@
     display: flex;
     flex-direction: column;
     gap: 3vw;
-    padding-top: 10vh;
-    padding-bottom: 0px; // Directive: Height dictated purely by rows
-    overflow: visible;
+    padding: 50px 0; // Directive 1 & 3: Breathing room and padding
+    overflow: visible; // Directive 3: Reveal fix
 
     .slider {
         display: flex;
         gap: 3vw;
-        width: 120vw;
+        width: 140vw; // Adjusted for kinetric sprawl
         position: relative;
-        left: -10vw;
+        left: -20vw;
         will-change: transform;
 
         .card {
-            flex: 0 0 25%;
-            aspect-ratio: 1 / 1.2;
+            width: 30vw; // Directive 1: Sizing
+            aspect-ratio: 16 / 9 !important; // Directive 1: Cinematic Ratio
             background-color: #F1F1F1;
             display: flex;
             align-items: center;
@@ -28,22 +27,30 @@
 
             .imageContainer {
                 position: relative;
-                width: 80%;
-                height: 80%;
+                width: 85%; // Directive 1: Mockup look
+                height: 85%;
+                
+                img {
+                    object-fit: contain !important;
+                }
             }
         }
     }
 }
 
 .curveContainer {
-    position: relative;
-    height: 100px;
+    position: absolute; // Directive 3: Peel anchor
+    bottom: 0;
+    left: 0;
     width: 100%;
+    height: 100px;
     z-index: 20;
+    transform: translateY(100%); // Directive 3: Shift below flow
+    pointer-events: none;
 
     .svg {
         position: absolute;
-        top: -1px; // Gap protection
+        top: 0;
         width: 100%;
         height: 100px;
         fill: #fff;
