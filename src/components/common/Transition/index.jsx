@@ -31,7 +31,8 @@ export default function Transition({children}) {
         if (isInitialLoad) {
             setIsContentVisible(true);
             sessionStorage.setItem("visited", "true");
-            gsap.set(container.current, { top: "-100vh", pointerEvents: "none" });
+            gsap.set(container.current, { top: "-100vh", pointerEvents: "none", visibility: "hidden" });
+            gsap.set(path.current, { attr: { d: "" } });
             return;
         }
 
@@ -110,7 +111,7 @@ export default function Transition({children}) {
                 if (!isContentVisible) {
                     setIsContentVisible(true);
                     if (container.current) {
-                        gsap.set(container.current, { top: "-100vh", pointerEvents: "none" });
+                        gsap.set(container.current, { top: "-100vh", pointerEvents: "none", visibility: "hidden" });
                     }
                 }
             }, 2000);

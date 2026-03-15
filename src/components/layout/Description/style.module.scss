@@ -1,0 +1,107 @@
+.description {
+    width: 100%;
+    position: relative;
+    background: #fff;
+    padding: 160px 0;
+    color: #1c1d20;
+    z-index: 2;
+
+    .wrapper {
+        display: flex;
+        justify-content: space-between;
+        margin: 0 auto;
+        width: 90%;
+        max-width: 1600px;
+        position: relative;
+
+        @media (max-width: 1024px) {
+            flex-direction: column;
+            gap: 50px;
+        }
+    }
+
+    .mainText {
+        width: 60%;
+        display: flex;
+        flex-direction: column; // Force strict line stacking
+        gap: 0; // Control vertical gap explicitly
+        text-align: left;
+        pointer-events: none;
+
+        @media (max-width: 1024px) {
+            width: 100%;
+        }
+
+        .lineMask {
+            position: relative;
+            overflow: hidden;
+            display: block; // Block for full-width masking
+            
+            .lineInner {
+                font-size: 2.5vw;
+                line-height: 1.3;
+                font-weight: 300;
+                display: block;
+                will-change: transform;
+                padding-bottom: 0.1em; // Descender protection
+                
+                @media (max-width: 1024px) {
+                    font-size: 7vw;
+                }
+            }
+        }
+    }
+
+    .sideContent {
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 40px;
+        padding-top: 20px;
+
+        @media (max-width: 1024px) {
+            width: 100%;
+        }
+
+        .secondaryText {
+            font-size: 1.1vw;
+            line-height: 1.5;
+            font-weight: 200;
+            color: #555;
+            margin: 0;
+            
+            @media (max-width: 1024px) {
+                font-size: 3.5vw;
+            }
+        }
+
+        .buttonContainer {
+            .button {
+                width: clamp(140px, 12vw, 180px) !important;
+                height: clamp(140px, 12vw, 180px) !important;
+                padding: 0 !important; 
+                background-color: #1c1d20;
+                color: white;
+                border-radius: 50% !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                border: none;
+                position: relative; // CRITICAL: Contain the absolute hover circle
+                overflow: hidden !important; // CRITICAL: Clip the absolute hover circle
+                
+                p {
+                    font-size: 1.1rem;
+                    font-weight: 300;
+                    margin: 0;
+                    position: relative;
+                    z-index: 2;
+                    color: white;
+                }
+            }
+        }
+    }
+}

@@ -8,6 +8,9 @@
   justify-content: center;
   padding: 15px 60px;
   transition: color 0.4s linear;
+  overflow: hidden !important; // Force containment of the hover circle
+  isolation: isolate; // Create a new stacking context
+  transform: translateZ(0); // Fix Safari/Chrome clipping bugs
 
   &:hover {
     color: white;

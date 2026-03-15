@@ -42,8 +42,7 @@ export default function RoundedButton({
   return (
     <Magnetic>
       <div
-        className={styles.roundedButton}
-        style={{ overflow: 'hidden' }}
+        className={`${styles.roundedButton} ${attributes.className || ''}`}
         onMouseEnter={manageMouseEnter}
         onMouseLeave={manageMouseLeave}
         {...attributes}

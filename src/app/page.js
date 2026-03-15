@@ -1,6 +1,7 @@
 'use client';
 import styles from './page.module.css';
 import Hero from '@/components/layout/Hero';
+import Description from '@/components/layout/Description';
 import Work from '@/components/layout/Work';
 import SlidingGrid from '@/components/layout/SlidingGrid';
 
@@ -13,6 +14,7 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <Hero />
+      <Description />
       <Work />
       <SlidingGrid />
     </main>
