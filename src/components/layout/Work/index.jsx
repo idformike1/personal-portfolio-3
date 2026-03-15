@@ -3,6 +3,7 @@ import styles from './style.module.scss';
 import { useState } from 'react';
 import Project from './Project';
 import Modal from './Modal';
+import Link from 'next/link';
 import Rounded from '@/components/common/RoundedButton';
 
 const projects = [
@@ -33,6 +34,7 @@ export default function Work() {
 
   return (
     <main className={styles.main}>
+      <h2>Recent Work</h2>
       <div className={styles.body}>
         {projects.map((project, index) => (
           <Project
@@ -45,9 +47,11 @@ export default function Work() {
       </div>
       {/* "More work" button — matches original */}
       <div className={styles.moreWork}>
-        <Rounded>
-          <p>More work <sup>{projects.length}</sup></p>
-        </Rounded>
+        <Link href="/work">
+          <Rounded>
+            <p>More work <sup>{projects.length}</sup></p>
+          </Rounded>
+        </Link>
       </div>
       <Modal modal={modal} projects={projects} />
     </main>
